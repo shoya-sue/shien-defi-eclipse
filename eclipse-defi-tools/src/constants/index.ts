@@ -14,24 +14,27 @@ const validateEnvVar = (value: string | undefined, defaultValue: string, name: s
 export const DEX_CONFIGS: Record<string, DEXConfig> = {
   jupiter: {
     name: 'Jupiter',
-    apiUrl: validateEnvVar(process.env.REACT_APP_JUPITER_API_URL, 'https://quote-api.eclipse.jup.ag', 'REACT_APP_JUPITER_API_URL'),
+    // 注意: 実際のJupiter Eclipse APIが利用可能になるまではモック実装を使用
+    apiUrl: validateEnvVar(process.env.REACT_APP_JUPITER_API_URL, 'https://mock-api.eclipse-defi-tools.local/jupiter', 'REACT_APP_JUPITER_API_URL'),
     programId: 'JUP4Fb2cqiRUcaTHdrPC8h2gNsA2ETXiPDD33WcGuJB',
     fee: 0.001,
     enabled: true,
   },
   orca: {
     name: 'Orca',
-    apiUrl: validateEnvVar(process.env.REACT_APP_ORCA_API_URL, 'https://api.orca.eclipse.so', 'REACT_APP_ORCA_API_URL'),
+    // 注意: 実際のOrca Eclipse APIが利用可能になるまではモック実装を使用
+    apiUrl: validateEnvVar(process.env.REACT_APP_ORCA_API_URL, 'https://mock-api.eclipse-defi-tools.local/orca', 'REACT_APP_ORCA_API_URL'),
     programId: 'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc',
     fee: 0.003,
-    enabled: true,
+    enabled: false, // 実際のAPIが利用可能になるまで無効
   },
   raydium: {
     name: 'Raydium',
-    apiUrl: validateEnvVar(process.env.REACT_APP_RAYDIUM_API_URL, 'https://api.raydium.eclipse.io', 'REACT_APP_RAYDIUM_API_URL'),
+    // 注意: 実際のRaydium Eclipse APIが利用可能になるまではモック実装を使用
+    apiUrl: validateEnvVar(process.env.REACT_APP_RAYDIUM_API_URL, 'https://mock-api.eclipse-defi-tools.local/raydium', 'REACT_APP_RAYDIUM_API_URL'),
     programId: '675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8',
     fee: 0.0025,
-    enabled: true,
+    enabled: false, // 実際のAPIが利用可能になるまで無効
   },
 };
 

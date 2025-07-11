@@ -1,18 +1,20 @@
 // セキュリティ関連のユーティリティ
 
-// CSP (Content Security Policy) 設定
+// CSP (Content Security Policy) 設定 - セキュリティ強化版
 export const CSP_DIRECTIVES = {
   'default-src': "'self'",
-  'script-src': "'self' 'unsafe-inline' 'unsafe-eval'",
-  'style-src': "'self' 'unsafe-inline' https://fonts.googleapis.com",
+  'script-src': "'self'", // unsafe-inline と unsafe-eval を削除
+  'style-src': "'self' https://fonts.googleapis.com", // unsafe-inline を削除（必要に応じてnonce使用）
   'font-src': "'self' https://fonts.gstatic.com",
-  'img-src': "'self' data: https: blob:",
-  'connect-src': "'self' https://api.coingecko.com https://quote-api.eclipse.jup.ag https://api.orca.eclipse.so https://api.raydium.eclipse.io https://mainnetbeta-rpc.eclipse.xyz wss://mainnetbeta-rpc.eclipse.xyz",
-  'worker-src': "'self' blob:",
+  'img-src': "'self' data: https://raw.githubusercontent.com", // 信頼できるドメインのみ
+  'connect-src': "'self' https://api.coingecko.com https://mainnetbeta-rpc.eclipse.xyz wss://mainnetbeta-rpc.eclipse.xyz https://mock-api.eclipse-defi-tools.local",
+  'worker-src': "'self'", // blob: を削除
   'frame-src': "'none'",
   'base-uri': "'self'",
   'form-action': "'self'",
+  'object-src': "'none'", // Flash等を無効化
   'upgrade-insecure-requests': '',
+  'block-all-mixed-content': '', // HTTP/HTTPSの混在を防止
 };
 
 // セキュリティヘッダー設定

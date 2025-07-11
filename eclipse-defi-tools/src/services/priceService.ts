@@ -112,7 +112,11 @@ class PriceService {
       return priceData;
     } catch (error) {
       console.error('Error fetching token price:', error);
-      return null;
+      // 開発環境でのみnullを返す、本番環境では例外をスロー
+      if (process.env.NODE_ENV === 'development') {
+        return null;
+      }
+      throw new Error(`価格データの取得に失敗しました: ${token.symbol}`);
     }
   }
 
@@ -160,14 +164,18 @@ class PriceService {
       });
     } catch (error) {
       console.error('Error fetching multiple token prices:', error);
-      return tokens.map(token => ({
-        token,
-        price: 0,
-        priceChange24h: 0,
-        volume24h: 0,
-        marketCap: 0,
-        timestamp: Date.now(),
-      }));
+      // 開発環境でのみ空データを返す、本番環境では例外をスロー
+      if (process.env.NODE_ENV === 'development') {
+        return tokens.map(token => ({
+          token,
+          price: 0,
+          priceChange24h: 0,
+          volume24h: 0,
+          marketCap: 0,
+          timestamp: Date.now(),
+        }));
+      }
+      throw new Error('価格データの一括取得に失敗しました。ネットワーク接続を確認してください。');
     }
   }
 
