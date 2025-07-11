@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { formatNumber, formatPercentage, formatDate } from '../../utils';
+import { formatNumber, formatDate } from '../../utils';
 import { usePnLCalculation } from '../../hooks/usePnLCalculation';
 
 export const TaxReport: React.FC = () => {

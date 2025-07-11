@@ -17,7 +17,7 @@ export const SwapInterface: React.FC = () => {
   
   const { quotes, bestQuote, loading, error, fetchQuotes, clearQuotes } = useSwapQuotes();
   const { connected } = useWallet();
-  const { subscribeToQuote, unsubscribe } = useRealtimeData();
+  const { } = useRealtimeData();
 
   useEffect(() => {
     if (inputAmount && validateAmount(inputAmount)) {

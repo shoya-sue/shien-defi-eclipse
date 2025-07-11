@@ -124,7 +124,7 @@ class RealtimeService {
     }
   }
 
-  private notifySubscribers(type: string, key: string, data: any) {
+  private notifySubscribers(type: string, _key: string, data: any) {
     for (const [id, subscription] of this.subscriptions) {
       if (subscription.type === type && subscription.enabled) {
         try {
@@ -264,20 +264,24 @@ class RealtimeService {
         
         switch (subscription.type) {
           case 'price':
-            result = await priceService.getPrice(subscription.params.token);
+            result = await priceService.getTokenPrice(subscription.params.token.address);
             break;
           case 'quote':
-            result = await dexService.getQuotes(
+            result = await dexService.getAllQuotes(
               subscription.params.inputToken,
               subscription.params.outputToken,
               subscription.params.amount
             );
             break;
           case 'pool':
-            result = await poolService.getPoolData(subscription.params.poolId);
+            result = await poolService.getPoolData(
+              subscription.params.poolId.token0,
+              subscription.params.poolId.token1,
+              subscription.params.poolId.dex
+            );
             break;
           case 'farming':
-            result = await farmingService.getUserPositions(subscription.params.userAddress);
+            result = await farmingService.getUserFarmingPositions(subscription.params.userAddress);
             break;
           default:
             return;
@@ -395,7 +399,7 @@ export const realtimeService = new RealtimeService();
 
 // React Hook for real-time data
 export const useRealtimeData = () => {
-  const [data, setData] = useState<RealtimeData>(realtimeService.getData());
+  const [data] = useState<RealtimeData>(realtimeService.getData());
   const [isConnected, setIsConnected] = useState(false);
   const subscriptionsRef = useRef<Set<string>>(new Set());
 

@@ -7,7 +7,7 @@ import type { TransactionFilter } from '../../services/transactionService';
 export const TransactionImporter: React.FC = () => {
   const { publicKey } = useWallet();
   const { transactions, loading, error, fetchTransactions } = usePnLCalculation();
-  const { filter, setFilter, applyFilter, clearFilter } = useTransactionFilter();
+  const { setFilter, applyFilter, clearFilter } = useTransactionFilter();
   const [manualAddress, setManualAddress] = useState('');
   const [dateRange, setDateRange] = useState({ from: '', to: '' });
   const [selectedType, setSelectedType] = useState('');

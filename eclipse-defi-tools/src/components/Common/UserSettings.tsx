@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { formatNumber, formatPercentage } from '../../utils';
+import React, { useState } from 'react';
+import { formatPercentage } from '../../utils';
 
 export interface UserSettings {
   theme: 'light' | 'dark' | 'system';

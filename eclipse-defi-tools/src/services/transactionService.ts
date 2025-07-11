@@ -1,4 +1,4 @@
-import type { Transaction, TransactionToken, Token, PnLData, PositionData } from '../types';
+import type { Transaction, PnLData, PositionData } from '../types';
 import { CACHE_DURATION } from '../constants';
 
 export interface TransactionFilter {
@@ -45,10 +45,14 @@ class TransactionService {
     userAddress: string,
     filter?: TransactionFilter
   ): Promise<Transaction[]> {
-    const params = new URLSearchParams({
-      address: userAddress,
-      ...filter,
-    });
+    const params = new URLSearchParams();
+    params.append('address', userAddress);
+    if (filter?.type) params.append('type', filter.type);
+    if (filter?.dateFrom) params.append('dateFrom', filter.dateFrom.toString());
+    if (filter?.dateTo) params.append('dateTo', filter.dateTo.toString());
+    if (filter?.tokenAddress) params.append('tokenAddress', filter.tokenAddress);
+    if (filter?.minAmount) params.append('minAmount', filter.minAmount.toString());
+    if (filter?.maxAmount) params.append('maxAmount', filter.maxAmount.toString());
     
     const response = await fetch(`/api/transactions?${params}`);
     if (!response.ok) {
@@ -57,7 +61,7 @@ class TransactionService {
     return response.json();
   }
 
-  private getMockTransactions(userAddress: string): Transaction[] {
+  private getMockTransactions(_userAddress: string): Transaction[] {
     const mockTokens = [
       { address: 'So11111111111111111111111111111111111111112', symbol: 'SOL', name: 'Solana', decimals: 9, chainId: 100 },
       { address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', symbol: 'USDC', name: 'USD Coin', decimals: 6, chainId: 100 },
@@ -198,7 +202,7 @@ class TransactionService {
     let totalCurrentValue = 0;
     let totalCostBasis = 0;
 
-    for (const [tokenAddress, position] of positions) {
+    for (const [_tokenAddress, position] of positions) {
       if (position.amount > 0) {
         const currentValue = position.amount * position.currentPrice;
         const costBasis = position.amount * position.averagePrice;
@@ -277,7 +281,7 @@ class TransactionService {
   generateTaxReport(
     transactions: Transaction[],
     taxYear: number,
-    country: string = 'US'
+    _country: string = 'US'
   ): {
     totalGains: number;
     totalLosses: number;

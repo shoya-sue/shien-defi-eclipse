@@ -403,9 +403,9 @@ class DEXIntegrationService {
 
   async estimateSwapFee(
     dex: string,
-    inputToken: Token,
-    outputToken: Token,
-    amount: number
+    _inputToken: Token,
+    _outputToken: Token,
+    _amount: number
   ): Promise<number> {
     try {
       const config = DEX_CONFIGS[dex];
