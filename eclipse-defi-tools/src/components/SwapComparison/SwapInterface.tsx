@@ -4,7 +4,9 @@ import { COMMON_TOKENS } from '../../constants';
 import { formatTokenAmount, formatPercentage, validateAmount } from '../../utils';
 import { useSwapQuotes } from '../../hooks/useSwapQuotes';
 import { useWallet } from '../../hooks/useWallet';
+import { useRealtimeData } from '../../services/realtimeService';
 import TokenSelector from '../Common/TokenSelector';
+import RealtimeIndicator from '../Common/RealtimeIndicator';
 
 export const SwapInterface: React.FC = () => {
   const [inputToken, setInputToken] = useState<Token>(COMMON_TOKENS[0]); // SOL
@@ -15,6 +17,7 @@ export const SwapInterface: React.FC = () => {
   
   const { quotes, bestQuote, loading, error, fetchQuotes, clearQuotes } = useSwapQuotes();
   const { connected } = useWallet();
+  const { subscribeToQuote, unsubscribe } = useRealtimeData();
 
   useEffect(() => {
     if (inputAmount && validateAmount(inputAmount)) {
@@ -49,9 +52,12 @@ export const SwapInterface: React.FC = () => {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-          スワップ価格比較
-        </h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            スワップ価格比較
+          </h2>
+          <RealtimeIndicator />
+        </div>
         <div className="relative">
           <button
             onClick={() => setShowSlippageSettings(!showSlippageSettings)}
