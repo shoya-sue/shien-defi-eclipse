@@ -1,6 +1,6 @@
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, Transaction } from '@solana/web3.js';
 import { useState, useEffect, useCallback } from 'react';
 
 export interface WalletBalance {
@@ -47,23 +47,23 @@ export const useWallet = () => {
   }, [wallet.connected, wallet.publicKey, fetchBalance]);
 
   const signTransaction = useCallback(
-    async (transaction: any) => {
+    async (transaction: Transaction) => {
       if (!wallet.signTransaction) {
         throw new Error('Wallet does not support signing transactions');
       }
       return await wallet.signTransaction(transaction);
     },
-    [wallet.signTransaction]
+    [wallet]
   );
 
   const signAllTransactions = useCallback(
-    async (transactions: any[]) => {
+    async (transactions: Transaction[]) => {
       if (!wallet.signAllTransactions) {
         throw new Error('Wallet does not support signing multiple transactions');
       }
       return await wallet.signAllTransactions(transactions);
     },
-    [wallet.signAllTransactions]
+    [wallet]
   );
 
   const signMessage = useCallback(
@@ -73,7 +73,7 @@ export const useWallet = () => {
       }
       return await wallet.signMessage(message);
     },
-    [wallet.signMessage]
+    [wallet]
   );
 
   return {
