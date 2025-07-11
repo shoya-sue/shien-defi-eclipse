@@ -2,24 +2,33 @@ import type { DEXConfig, Token } from '../types';
 
 export const ECLIPSE_CHAIN_ID = 100;
 
+// 環境変数のバリデーション
+const validateEnvVar = (value: string | undefined, defaultValue: string, name: string): string => {
+  if (!value) {
+    console.warn(`Environment variable ${name} is not set, using default: ${defaultValue}`);
+    return defaultValue;
+  }
+  return value;
+};
+
 export const DEX_CONFIGS: Record<string, DEXConfig> = {
   jupiter: {
     name: 'Jupiter',
-    apiUrl: process.env.REACT_APP_JUPITER_API_URL || 'https://quote-api.eclipse.jup.ag',
+    apiUrl: validateEnvVar(process.env.REACT_APP_JUPITER_API_URL, 'https://quote-api.eclipse.jup.ag', 'REACT_APP_JUPITER_API_URL'),
     programId: 'JUP4Fb2cqiRUcaTHdrPC8h2gNsA2ETXiPDD33WcGuJB',
     fee: 0.001,
     enabled: true,
   },
   orca: {
     name: 'Orca',
-    apiUrl: process.env.REACT_APP_ORCA_API_URL || 'https://api.orca.eclipse.so',
+    apiUrl: validateEnvVar(process.env.REACT_APP_ORCA_API_URL, 'https://api.orca.eclipse.so', 'REACT_APP_ORCA_API_URL'),
     programId: 'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc',
     fee: 0.003,
     enabled: true,
   },
   raydium: {
     name: 'Raydium',
-    apiUrl: process.env.REACT_APP_RAYDIUM_API_URL || 'https://api.raydium.eclipse.io',
+    apiUrl: validateEnvVar(process.env.REACT_APP_RAYDIUM_API_URL, 'https://api.raydium.eclipse.io', 'REACT_APP_RAYDIUM_API_URL'),
     programId: '675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8',
     fee: 0.0025,
     enabled: true,
@@ -54,8 +63,8 @@ export const COMMON_TOKENS: Token[] = [
 ];
 
 export const RPC_ENDPOINTS = {
-  mainnet: process.env.REACT_APP_ECLIPSE_RPC_URL || 'https://mainnetbeta-rpc.eclipse.xyz',
-  websocket: process.env.REACT_APP_ECLIPSE_WS_URL || 'wss://mainnetbeta-rpc.eclipse.xyz',
+  mainnet: validateEnvVar(process.env.REACT_APP_ECLIPSE_RPC_URL, 'https://mainnetbeta-rpc.eclipse.xyz', 'REACT_APP_ECLIPSE_RPC_URL'),
+  websocket: validateEnvVar(process.env.REACT_APP_ECLIPSE_WS_URL, 'wss://mainnetbeta-rpc.eclipse.xyz', 'REACT_APP_ECLIPSE_WS_URL'),
 };
 
 export const API_ENDPOINTS = {

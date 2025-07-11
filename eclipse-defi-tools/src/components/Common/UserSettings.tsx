@@ -1,31 +1,6 @@
 import React, { useState } from 'react';
 import { formatPercentage } from '../../utils';
-
-export interface UserSettings {
-  theme: 'light' | 'dark' | 'system';
-  currency: 'USD' | 'EUR' | 'JPY';
-  language: 'en' | 'ja';
-  slippageTolerance: number;
-  priceAlerts: boolean;
-  realtimeUpdates: boolean;
-  refreshInterval: number;
-  notifications: {
-    priceChanges: boolean;
-    transactions: boolean;
-    farming: boolean;
-    pools: boolean;
-  };
-  privacy: {
-    trackingEnabled: boolean;
-    analyticsEnabled: boolean;
-    shareData: boolean;
-  };
-  advanced: {
-    showAdvancedStats: boolean;
-    debugMode: boolean;
-    gasOptimization: boolean;
-  };
-}
+import type { UserSettings } from '../../types';
 
 const defaultSettings: UserSettings = {
   theme: 'system',
@@ -60,7 +35,7 @@ interface UserSettingsProps {
   onSettingsChange: (settings: UserSettings) => void;
 }
 
-export const UserSettings: React.FC<UserSettingsProps> = ({
+const UserSettingsComponent: React.FC<UserSettingsProps> = ({
   isOpen,
   onClose,
   settings,
@@ -499,4 +474,4 @@ export const UserSettings: React.FC<UserSettingsProps> = ({
   );
 };
 
-export default UserSettings;
+export default UserSettingsComponent;

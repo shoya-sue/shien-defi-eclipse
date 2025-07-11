@@ -4,7 +4,7 @@ import { COMMON_TOKENS } from '../../constants';
 import { formatTokenAmount, formatPercentage, validateAmount } from '../../utils';
 import { useSwapQuotes } from '../../hooks/useSwapQuotes';
 import { useWallet } from '../../hooks/useWallet';
-import { useRealtimeData } from '../../services/realtimeService';
+// import { useRealtimeData } from '../../services/realtimeService';
 import TokenSelector from '../Common/TokenSelector';
 import RealtimeIndicator from '../Common/RealtimeIndicator';
 
@@ -17,12 +17,15 @@ export const SwapInterface: React.FC = () => {
   
   const { quotes, bestQuote, loading, error, fetchQuotes, clearQuotes } = useSwapQuotes();
   const { connected } = useWallet();
-  const { } = useRealtimeData();
+  // リアルタイム機能は将来の実装で使用予定
+  // const { subscribeToQuote } = useRealtimeData();
 
   useEffect(() => {
     if (inputAmount && validateAmount(inputAmount)) {
       const amount = parseFloat(inputAmount);
-      fetchQuotes(inputToken, outputToken, amount, slippage * 100);
+      // スリッページをbps（basis points）に変換 (0.5% = 50bps)
+      const slippageBps = slippage * 100;
+      fetchQuotes(inputToken, outputToken, amount, slippageBps);
     } else {
       clearQuotes();
     }

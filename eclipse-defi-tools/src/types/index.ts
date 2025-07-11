@@ -126,11 +126,29 @@ export interface NotificationSettings {
 }
 
 export interface UserSettings {
-  slippage: SlippageSettings;
-  notifications: NotificationSettings;
-  theme: 'light' | 'dark' | 'auto';
+  theme: 'light' | 'dark' | 'system';
+  currency: 'USD' | 'EUR' | 'JPY';
   language: 'en' | 'ja';
-  currency: 'USD' | 'JPY';
+  slippageTolerance: number;
+  priceAlerts: boolean;
+  realtimeUpdates: boolean;
+  refreshInterval: number;
+  notifications: {
+    priceChanges: boolean;
+    transactions: boolean;
+    farming: boolean;
+    pools: boolean;
+  };
+  privacy: {
+    trackingEnabled: boolean;
+    analyticsEnabled: boolean;
+    shareData: boolean;
+  };
+  advanced: {
+    showAdvancedStats: boolean;
+    debugMode: boolean;
+    gasOptimization: boolean;
+  };
 }
 
 export type TimeRange = '1h' | '24h' | '7d' | '30d' | '1y' | 'all';

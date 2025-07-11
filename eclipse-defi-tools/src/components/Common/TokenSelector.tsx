@@ -68,7 +68,7 @@ export const TokenSelector: React.FC<TokenSelectorProps> = ({
             </div>
           </div>
         ) : (
-          <span className="text-gray-500 dark:text-gray-400">Select token</span>
+          <span className="text-gray-500 dark:text-gray-400">トークンを選択</span>
         )}
         <svg
           className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -85,7 +85,7 @@ export const TokenSelector: React.FC<TokenSelectorProps> = ({
           <div className="p-3 border-b border-gray-200 dark:border-gray-700">
             <input
               type="text"
-              placeholder="Search tokens..."
+              placeholder="トークンを検索..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -95,7 +95,7 @@ export const TokenSelector: React.FC<TokenSelectorProps> = ({
           <div className="max-h-40 overflow-y-auto">
             {filteredTokens.length === 0 ? (
               <div className="px-3 py-2 text-gray-500 dark:text-gray-400 text-center">
-                No tokens found
+                トークンが見つかりません
               </div>
             ) : (
               filteredTokens.map((token) => (

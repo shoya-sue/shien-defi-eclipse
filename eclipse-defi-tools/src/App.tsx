@@ -7,6 +7,8 @@ import YieldTracker from './components/YieldTracker/YieldTracker';
 import PnLCalculator from './components/PnLCalculator/PnLCalculator';
 import RealtimeIndicator from './components/Common/RealtimeIndicator';
 import UserSettings from './components/Common/UserSettings';
+import type { UserSettings as UserSettingsType } from './types';
+import ErrorBoundary from './components/Common/ErrorBoundary';
 import { COMMON_TOKENS } from './constants';
 import { usePrices } from './hooks/usePrices';
 import { useSettings } from './hooks/useSettings';
@@ -98,8 +100,9 @@ function App() {
   };
 
   return (
-    <WalletConnector>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <ErrorBoundary>
+      <WalletConnector>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <header className="bg-white dark:bg-gray-800 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-4">
@@ -162,10 +165,11 @@ function App() {
           isOpen={showSettings}
           onClose={() => setShowSettings(false)}
           settings={settings}
-          onSettingsChange={saveSettings}
+          onSettingsChange={saveSettings as (settings: UserSettingsType) => void}
         />
-      </div>
-    </WalletConnector>
+        </div>
+      </WalletConnector>
+    </ErrorBoundary>
   );
 }
 
