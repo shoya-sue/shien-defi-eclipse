@@ -176,11 +176,16 @@ export function isSecureURL(url: string): boolean {
 // リクエストのレート制限
 export class RateLimiter {
   private requests: Map<string, number[]> = new Map();
+  private maxRequests: number;
+  private windowMs: number;
   
   constructor(
-    private maxRequests: number = 100,
-    private windowMs: number = 60000 // 1分
-  ) {}
+    maxRequests: number = 100,
+    windowMs: number = 60000 // 1分
+  ) {
+    this.maxRequests = maxRequests;
+    this.windowMs = windowMs;
+  }
   
   isAllowed(identifier: string): boolean {
     const now = Date.now();

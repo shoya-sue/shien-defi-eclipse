@@ -164,7 +164,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
                       {Object.entries(securityReport.eventsByType).map(([type, count]) => (
                         <div key={type} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                           <span className="text-gray-900 dark:text-white">{getEventTypeLabel(type)}</span>
-                          <span className="font-semibold text-gray-600 dark:text-gray-400">{count}</span>
+                          <span className="font-semibold text-gray-600 dark:text-gray-400">{String(count)}</span>
                         </div>
                       ))}
                     </div>
