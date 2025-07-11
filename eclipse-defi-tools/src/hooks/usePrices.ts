@@ -23,8 +23,12 @@ export const usePrices = (tokens: Token[]): UsePricesReturn => {
     try {
       const priceData = await priceService.getMultipleTokenPrices(tokens);
       setPrices(priceData);
+      setError(null); // 成功時はエラーをクリア
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch prices');
+      console.error('Price fetch error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch prices';
+      setError(`価格データの取得に失敗しました: ${errorMessage}`);
+      // エラー時は空配列ではなく既存のデータを保持
     } finally {
       setLoading(false);
     }

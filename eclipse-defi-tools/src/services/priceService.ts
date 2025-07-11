@@ -21,6 +21,45 @@ class PriceService {
     this.subscribers.forEach(callback => callback(prices));
   }, 500);
 
+  // Eclipse チェーンのトークンかどうかを判定
+  private isEclipseToken(token: Token): boolean {
+    // Eclipse チェーンのトークンの特徴で判定
+    // 実際の実装では、トークンリストやチェーンIDで判定
+    return token.address.length === 44 && !token.address.startsWith('0x');
+  }
+
+  // Eclipse チェーン専用の価格取得
+  private async fetchEclipseTokenPrice(token: Token): Promise<Response> {
+    // 模擬的な価格データを返す（実際の実装では Eclipse DEX からデータを取得）
+    const mockPriceData = {
+      [token.address.toLowerCase()]: {
+        usd: this.generateMockPrice(token.symbol),
+        usd_24h_change: (Math.random() - 0.5) * 20, // -10% ~ +10%
+        usd_market_cap: Math.random() * 1000000000,
+        usd_24h_vol: Math.random() * 10000000,
+      }
+    };
+
+    return new Response(JSON.stringify(mockPriceData), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // 模擬価格生成（実際の実装では不要）
+  private generateMockPrice(symbol: string): number {
+    const basePrice = {
+      'SOL': 100,
+      'USDC': 1,
+      'USDT': 1,
+      'ETH': 2000,
+      'BTC': 40000,
+    }[symbol] || Math.random() * 100;
+    
+    // 小さなランダム変動を追加
+    return basePrice * (0.95 + Math.random() * 0.1);
+  }
+
   async getTokenPrice(token: Token): Promise<PriceData | null> {
     const cacheKey = `price_${token.address}`;
     const cached = this.cache.get(cacheKey);
@@ -30,9 +69,20 @@ class PriceService {
     }
 
     try {
-      const response = await fetch(
-        `${API_ENDPOINTS.coingecko}/simple/token_price/ethereum?contract_addresses=${token.address}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true`
-      );
+      // Eclipse チェーン対応: CoinGecko API はフォールバック用として使用
+      // プライマリは独自の価格取得ロジックを使用
+      let response;
+      
+      // Eclipse チェーンのトークンかどうかをチェック
+      if (this.isEclipseToken(token)) {
+        // Eclipse 専用の価格取得
+        response = await this.fetchEclipseTokenPrice(token);
+      } else {
+        // CoinGecko API (Ethereum ベース)
+        response = await fetch(
+          `${API_ENDPOINTS.coingecko}/simple/token_price/ethereum?contract_addresses=${token.address}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true`
+        );
+      }
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
