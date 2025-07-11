@@ -225,7 +225,7 @@ export class RateLimiter {
 export interface SecurityEvent {
   type: 'xss_attempt' | 'csrf_attempt' | 'rate_limit_exceeded' | 'invalid_input' | 'suspicious_activity';
   timestamp: number;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   severity: 'low' | 'medium' | 'high' | 'critical';
   userAgent?: string;
   ipAddress?: string;

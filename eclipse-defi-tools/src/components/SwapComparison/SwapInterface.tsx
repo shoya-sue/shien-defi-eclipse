@@ -4,6 +4,7 @@ import { COMMON_TOKENS } from '../../constants';
 import { formatTokenAmount, formatPercentage, validateAmount } from '../../utils';
 import { useSwapQuotes } from '../../hooks/useSwapQuotes';
 import { useWallet } from '../../hooks/useWallet';
+import { useSecurityContext } from '../Common/SecurityProvider';
 // import { useRealtimeData } from '../../services/realtimeService';
 import TokenSelector from '../Common/TokenSelector';
 import RealtimeIndicator from '../Common/RealtimeIndicator';
@@ -17,6 +18,7 @@ export const SwapInterface: React.FC = () => {
   
   const { quotes, bestQuote, loading, error, fetchQuotes, clearQuotes } = useSwapQuotes();
   const { connected } = useWallet();
+  const { sanitizeInput, auditInput } = useSecurityContext();
   // リアルタイム機能は将来の実装で使用予定
   // const { subscribeToQuote } = useRealtimeData();
 
@@ -32,9 +34,15 @@ export const SwapInterface: React.FC = () => {
   }, [inputAmount, inputToken, outputToken, slippage, fetchQuotes, clearQuotes]);
 
   const handleInputAmountChange = (value: string) => {
+    // セキュリティチェック
+    if (!auditInput(value, 'swap_input_amount')) {
+      return;
+    }
+    
     // 数値と小数点のみを許可
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      setInputAmount(value);
+      const sanitizedValue = sanitizeInput(value);
+      setInputAmount(sanitizedValue);
     }
   };
 

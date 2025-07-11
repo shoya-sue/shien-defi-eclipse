@@ -8,8 +8,17 @@ interface SecurityDashboardProps {
 }
 
 export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, onClose }) => {
-  const [securityReport, setSecurityReport] = useState<any>(null);
-  const [securitySettings, setSecuritySettings] = useState<any>(null);
+  const [securityReport, setSecurityReport] = useState<{
+    totalEvents: number;
+    eventsByType: Record<string, number>;
+    eventsBySeverity: Record<string, number>;
+    recentEvents: SecurityEvent[];
+  } | null>(null);
+  const [securitySettings, setSecuritySettings] = useState<{
+    isSecure: boolean;
+    issues: string[];
+    recommendations: string[];
+  } | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'events' | 'settings'>('overview');
 
   useEffect(() => {
@@ -80,7 +89,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
                 ].map((tab) => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setActiveTab(tab.id as 'overview' | 'events' | 'settings')}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-left ${
                       activeTab === tab.id
                         ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'

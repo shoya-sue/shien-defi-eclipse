@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { useSecurity } from '../../hooks/useSecurity';
-import { sanitizeInput, preventXSS } from '../../utils/security';
+import { sanitizeInput, preventXSS, type SecurityEvent } from '../../utils/security';
 
 interface SecurityContextType {
   auditInput: (input: string, context: string) => boolean;
@@ -8,7 +8,12 @@ interface SecurityContextType {
   auditRateLimit: (identifier: string) => boolean;
   sanitizeInput: (input: string) => string;
   preventXSS: (content: string) => string;
-  getSecurityReport: () => any;
+  getSecurityReport: () => {
+    totalEvents: number;
+    eventsByType: Record<string, number>;
+    eventsBySeverity: Record<string, number>;
+    recentEvents: SecurityEvent[];
+  };
 }
 
 const SecurityContext = createContext<SecurityContextType | null>(null);
@@ -25,7 +30,7 @@ interface SecurityProviderProps {
   children: React.ReactNode;
 }
 
-export const SecurityProvider: React.FC<SecurityProviderProps> = ({ children }) => {
+const SecurityProvider: React.FC<SecurityProviderProps> = ({ children }) => {
   const { auditInput, auditURL, auditRateLimit, getSecurityReport } = useSecurity();
 
   useEffect(() => {
@@ -60,4 +65,5 @@ export const SecurityProvider: React.FC<SecurityProviderProps> = ({ children }) 
   );
 };
 
+export { SecurityProvider };
 export default SecurityProvider;
