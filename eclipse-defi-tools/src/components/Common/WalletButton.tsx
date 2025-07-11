@@ -1,0 +1,43 @@
+import React from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { formatAddress } from '../../utils';
+
+interface WalletButtonProps {
+  className?: string;
+}
+
+export const WalletButton: React.FC<WalletButtonProps> = ({ className }) => {
+  const { publicKey, connected, disconnect } = useWallet();
+
+  const handleDisconnect = async () => {
+    await disconnect();
+  };
+
+  if (connected && publicKey) {
+    return (
+      <div className={`flex items-center gap-2 ${className}`}>
+        <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
+          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+          <span className="text-sm font-medium">
+            {formatAddress(publicKey.toBase58())}
+          </span>
+        </div>
+        <button
+          onClick={handleDisconnect}
+          className="px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+        >
+          Disconnect
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <WalletMultiButton
+      className={`!bg-blue-600 hover:!bg-blue-700 !text-white !font-medium !rounded-lg !px-4 !py-2 !text-sm !transition-colors ${className}`}
+    />
+  );
+};
+
+export default WalletButton;
