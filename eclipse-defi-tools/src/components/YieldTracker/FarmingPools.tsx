@@ -201,7 +201,7 @@ export const FarmingPools: React.FC = () => {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      {pool.rewardTokens.map((token, index) => (
+                      {pool.rewardTokens.map((token) => (
                         <div key={token.address} className="flex items-center gap-1">
                           {token.logoURI && (
                             <img

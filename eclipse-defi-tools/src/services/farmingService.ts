@@ -1,5 +1,5 @@
-import type { Token, FarmingPosition } from '../types';
-import { DEX_CONFIGS, CACHE_DURATION } from '../constants';
+import type { Token } from '../types';
+import { CACHE_DURATION } from '../constants';
 
 export interface FarmingPool {
   poolId: string;
