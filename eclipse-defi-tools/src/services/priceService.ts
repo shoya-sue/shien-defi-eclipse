@@ -1,5 +1,6 @@
 import type { Token, PriceData } from '../types';
 import { API_ENDPOINTS, CACHE_DURATION } from '../constants';
+import { LRUCache, debounce } from '../utils';
 
 interface CoinGeckoPrice {
   [key: string]: {
@@ -11,8 +12,14 @@ interface CoinGeckoPrice {
 }
 
 class PriceService {
-  private cache = new Map<string, { data: PriceData; timestamp: number }>();
+  private cache = new LRUCache<string, { data: PriceData; timestamp: number }>(100);
   private subscribers = new Set<(prices: PriceData[]) => void>();
+  
+  // デバウンス済みの価格更新通知
+  private debouncedNotifySubscribers = debounce((...args: unknown[]) => {
+    const prices = args[0] as PriceData[];
+    this.subscribers.forEach(callback => callback(prices));
+  }, 500);
 
   async getTokenPrice(token: Token): Promise<PriceData | null> {
     const cacheKey = `price_${token.address}`;
@@ -48,6 +55,10 @@ class PriceService {
       };
 
       this.cache.set(cacheKey, { data: priceData, timestamp: Date.now() });
+      
+      // デバウンス済みの通知
+      this.debouncedNotifySubscribers([priceData]);
+      
       return priceData;
     } catch (error) {
       console.error('Error fetching token price:', error);

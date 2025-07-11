@@ -240,3 +240,15 @@ export function retry<T>(
     throw error;
   });
 }
+
+// パフォーマンス関連のユーティリティをエクスポート
+export {
+  memoize,
+  LRUCache,
+  deduplicateArray,
+  batchProcess,
+  limitConcurrency,
+  calculateVirtualItems,
+  PerformanceMonitor,
+  performanceMonitor,
+} from './performance';

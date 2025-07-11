@@ -1,13 +1,69 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <title>Eclipse DeFi Tools</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Meta tags for PWA -->
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="description" content="Comprehensive DeFi tools for Eclipse blockchain" />
+    <meta name="keywords" content="DeFi, Eclipse, blockchain, cryptocurrency, trading, yield farming" />
+    <meta name="author" content="Eclipse DeFi Tools" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Eclipse DeFi Tools" />
+    <meta property="og:description" content="Comprehensive DeFi tools for Eclipse blockchain" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://eclipse-defi-tools.com" />
+    <meta property="og:image" content="/icons/icon-512x512.png" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Eclipse DeFi Tools" />
+    <meta name="twitter:description" content="Comprehensive DeFi tools for Eclipse blockchain" />
+    <meta name="twitter:image" content="/icons/icon-512x512.png" />
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Eclipse DeFi" />
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/src/main.tsx" as="script" type="module" />
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Offline fallback -->
+    <noscript>
+      <div style="text-align: center; padding: 2rem; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+        <h2>JavaScript が無効です</h2>
+        <p>Eclipse DeFi Tools を使用するには JavaScript を有効にしてください。</p>
+      </div>
+    </noscript>
   </body>
 </html>

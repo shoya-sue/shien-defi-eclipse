@@ -1,14 +1,21 @@
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import WalletConnector from './components/Common/WalletConnector';
 import WalletButton from './components/Common/WalletButton';
-import SwapInterface from './components/SwapComparison/SwapInterface';
-import LiquidityCalculator from './components/LiquidityCalculator/LiquidityCalculator';
-import YieldTracker from './components/YieldTracker/YieldTracker';
-import PnLCalculator from './components/PnLCalculator/PnLCalculator';
 import RealtimeIndicator from './components/Common/RealtimeIndicator';
-import UserSettings from './components/Common/UserSettings';
-import type { UserSettings as UserSettingsType } from './types';
+import OfflineIndicator from './components/Common/OfflineIndicator';
+import OfflineBanner from './components/Common/OfflineBanner';
+import PWAInstallPrompt from './components/Common/PWAInstallPrompt';
 import ErrorBoundary from './components/Common/ErrorBoundary';
+import {
+  LazySwapInterface,
+  LazyLiquidityCalculator,
+  LazyYieldTracker,
+  LazyPnLCalculator,
+  LazyUserSettings,
+  ComponentLoader,
+  SettingsLoader
+} from './components/LazyComponents';
+import type { UserSettings as UserSettingsType } from './types';
 import { COMMON_TOKENS } from './constants';
 import { usePrices } from './hooks/usePrices';
 import { useSettings } from './hooks/useSettings';
@@ -25,13 +32,29 @@ function App() {
   const renderContent = () => {
     switch (activeTab) {
       case 'swap':
-        return <SwapInterface />;
+        return (
+          <Suspense fallback={<ComponentLoader />}>
+            <LazySwapInterface />
+          </Suspense>
+        );
       case 'pools':
-        return <LiquidityCalculator />;
+        return (
+          <Suspense fallback={<ComponentLoader />}>
+            <LazyLiquidityCalculator />
+          </Suspense>
+        );
       case 'farming':
-        return <YieldTracker />;
+        return (
+          <Suspense fallback={<ComponentLoader />}>
+            <LazyYieldTracker />
+          </Suspense>
+        );
       case 'pnl':
-        return <PnLCalculator />;
+        return (
+          <Suspense fallback={<ComponentLoader />}>
+            <LazyPnLCalculator />
+          </Suspense>
+        );
       case 'prices':
         return (
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
@@ -111,6 +134,7 @@ function App() {
                   Eclipse DeFi Tools
                 </h1>
                 <RealtimeIndicator />
+                <OfflineIndicator />
               </div>
               <div className="flex items-center gap-3">
                 <button
@@ -128,6 +152,8 @@ function App() {
             </div>
           </div>
         </header>
+
+        <OfflineBanner />
 
         <nav className="bg-white dark:bg-gray-800 shadow-sm border-t border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -161,12 +187,19 @@ function App() {
         </main>
         
         {/* Settings Modal */}
-        <UserSettings
-          isOpen={showSettings}
-          onClose={() => setShowSettings(false)}
-          settings={settings}
-          onSettingsChange={saveSettings as (settings: UserSettingsType) => void}
-        />
+        {showSettings && (
+          <Suspense fallback={<SettingsLoader />}>
+            <LazyUserSettings
+              isOpen={showSettings}
+              onClose={() => setShowSettings(false)}
+              settings={settings}
+              onSettingsChange={saveSettings as (settings: UserSettingsType) => void}
+            />
+          </Suspense>
+        )}
+        
+        {/* PWA Install Prompt */}
+        <PWAInstallPrompt />
         </div>
       </WalletConnector>
     </ErrorBoundary>
