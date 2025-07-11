@@ -1,67 +1,56 @@
+import { useState } from 'react';
 import WalletConnector from './components/Common/WalletConnector';
 import WalletButton from './components/Common/WalletButton';
+import SwapInterface from './components/SwapComparison/SwapInterface';
 import { COMMON_TOKENS } from './constants';
 import { usePrices } from './hooks/usePrices';
 import { formatPrice, formatPercentage } from './utils';
 
+type ActiveTab = 'swap' | 'pools' | 'farming' | 'pnl' | 'prices';
+
 function App() {
+  const [activeTab, setActiveTab] = useState<ActiveTab>('swap');
   const { prices, loading, error } = usePrices(COMMON_TOKENS);
 
-  return (
-    <WalletConnector>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <header className="bg-white dark:bg-gray-800 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-4">
-              <div className="flex items-center">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  Eclipse DeFi Tools
-                </h1>
-              </div>
-              <WalletButton />
-            </div>
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'swap':
+        return <SwapInterface />;
+      case 'pools':
+        return (
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              流動性プール計算機
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              Coming soon...
+            </p>
           </div>
-        </header>
-
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                スワップ価格比較
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                複数DEXの価格を比較し、最適な取引ルートを提案
-              </p>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                流動性プール計算機
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                APYやImpermanent Loss計算
-              </p>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Yield Farming Tracker
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                利回り農業のポジション管理
-              </p>
-            </div>
-            
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                PnL計算機
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
-                損益計算と税務サポート
-              </p>
-            </div>
+        );
+      case 'farming':
+        return (
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              Yield Farming Tracker
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              Coming soon...
+            </p>
           </div>
-
+        );
+      case 'pnl':
+        return (
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              PnL計算機
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              Coming soon...
+            </p>
+          </div>
+        );
+      case 'prices':
+        return (
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
               トークン価格
@@ -121,6 +110,57 @@ function App() {
               </div>
             )}
           </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <WalletConnector>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <header className="bg-white dark:bg-gray-800 shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-4">
+              <div className="flex items-center">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Eclipse DeFi Tools
+                </h1>
+              </div>
+              <WalletButton />
+            </div>
+          </div>
+        </header>
+
+        <nav className="bg-white dark:bg-gray-800 shadow-sm border-t border-gray-200 dark:border-gray-700">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex space-x-8">
+              {[
+                { id: 'swap', label: 'スワップ', icon: '💱' },
+                { id: 'pools', label: '流動性プール', icon: '💧' },
+                { id: 'farming', label: 'ファーミング', icon: '🌾' },
+                { id: 'pnl', label: 'PnL', icon: '📊' },
+                { id: 'prices', label: '価格', icon: '💰' },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id as ActiveTab)}
+                  className={`flex items-center px-3 py-4 text-sm font-medium border-b-2 transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+                  }`}
+                >
+                  <span className="mr-2">{tab.icon}</span>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </nav>
+
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {renderContent()}
         </main>
       </div>
     </WalletConnector>
