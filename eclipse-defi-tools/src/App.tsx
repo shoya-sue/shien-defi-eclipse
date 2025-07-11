@@ -4,6 +4,7 @@ import WalletButton from './components/Common/WalletButton';
 import SwapInterface from './components/SwapComparison/SwapInterface';
 import LiquidityCalculator from './components/LiquidityCalculator/LiquidityCalculator';
 import YieldTracker from './components/YieldTracker/YieldTracker';
+import PnLCalculator from './components/PnLCalculator/PnLCalculator';
 import { COMMON_TOKENS } from './constants';
 import { usePrices } from './hooks/usePrices';
 import { formatPrice, formatPercentage } from './utils';
@@ -23,16 +24,7 @@ function App() {
       case 'farming':
         return <YieldTracker />;
       case 'pnl':
-        return (
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-              PnL計算機
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300">
-              Coming soon...
-            </p>
-          </div>
-        );
+        return <PnLCalculator />;
       case 'prices':
         return (
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
