@@ -44,13 +44,26 @@ class RealtimeService {
   }
 
   private initWebSocket() {
-    const wsUrl = process.env.REACT_APP_ECLIPSE_WS_URL || 'ws://localhost:8080';
+    // WebSocket機能が無効化されている場合はスキップ
+    if (process.env.REACT_APP_ENABLE_WEBSOCKET === 'false') {
+      console.log('WebSocket is disabled');
+      return;
+    }
+
+    // Eclipse mainnetのWebSocket URLを使用（開発時はポーリングのみ）
+    const wsUrl = process.env.REACT_APP_ECLIPSE_WS_URL || 'wss://eclipse-mainnet.rpcpool.com';
+    
+    // 開発環境ではWebSocket接続を試みない（ポーリングのみ使用）
+    if (process.env.NODE_ENV === 'development' && !process.env.REACT_APP_FORCE_WEBSOCKET) {
+      console.log('WebSocket disabled in development mode. Using polling instead.');
+      return;
+    }
     
     try {
       this.ws = new WebSocket(wsUrl);
       
       this.ws.onopen = () => {
-        console.log('WebSocket connected');
+        console.log('WebSocket connected to Eclipse');
         this.reconnectAttempts = 0;
         this.sendHeartbeat();
       };
@@ -71,10 +84,11 @@ class RealtimeService {
 
       this.ws.onerror = (error) => {
         console.error('WebSocket error:', error);
+        // エラー時はポーリングにフォールバック
       };
     } catch (error) {
       console.error('WebSocket initialization error:', error);
-      this.handleWebSocketReconnect();
+      // 初期化エラー時はポーリングを使用
     }
   }
 
