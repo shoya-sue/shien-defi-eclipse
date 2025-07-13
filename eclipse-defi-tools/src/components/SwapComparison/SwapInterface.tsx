@@ -17,10 +17,17 @@ export const SwapInterface: React.FC = () => {
   const [showSlippageSettings, setShowSlippageSettings] = useState(false);
   
   const { quotes, bestQuote, loading, error, fetchQuotes, clearQuotes } = useSwapQuotes();
-  const { connected } = useWallet();
+  const { connected, balance, fetchAllBalances, getTokenBalance } = useWallet();
   const { sanitizeInput, auditInput } = useSecurityContext();
   // リアルタイム機能は将来の実装で使用予定
   // const { subscribeToQuote } = useRealtimeData();
+
+  // ウォレット接続時にトークンバランスを取得
+  useEffect(() => {
+    if (connected) {
+      fetchAllBalances(COMMON_TOKENS);
+    }
+  }, [connected, fetchAllBalances]);
 
   useEffect(() => {
     if (inputAmount && validateAmount(inputAmount)) {
@@ -125,7 +132,9 @@ export const SwapInterface: React.FC = () => {
               From
             </span>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Balance: --
+              Balance: {inputToken.symbol === 'SOL' 
+                ? balance.sol.toFixed(4) 
+                : getTokenBalance(inputToken.address)?.uiBalance || '0'}
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -164,7 +173,9 @@ export const SwapInterface: React.FC = () => {
               To
             </span>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Balance: --
+              Balance: {outputToken.symbol === 'SOL' 
+                ? balance.sol.toFixed(4) 
+                : getTokenBalance(outputToken.address)?.uiBalance || '0'}
             </span>
           </div>
           <div className="flex items-center gap-3">

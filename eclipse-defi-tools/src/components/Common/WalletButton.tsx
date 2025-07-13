@@ -2,6 +2,7 @@ import React from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { formatAddress } from '../../utils';
+import { useWallet as useCustomWallet } from '../../hooks/useWallet';
 
 interface WalletButtonProps {
   className?: string;
@@ -9,6 +10,7 @@ interface WalletButtonProps {
 
 export const WalletButton: React.FC<WalletButtonProps> = ({ className }) => {
   const { publicKey, connected, disconnect } = useWallet();
+  const { balance } = useCustomWallet();
 
   const handleDisconnect = async () => {
     await disconnect();
@@ -17,10 +19,15 @@ export const WalletButton: React.FC<WalletButtonProps> = ({ className }) => {
   if (connected && publicKey) {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
-          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span className="text-sm font-medium">
-            {formatAddress(publicKey.toBase58())}
+        <div className="flex flex-col items-end">
+          <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span className="text-sm font-medium">
+              {formatAddress(publicKey.toBase58())}
+            </span>
+          </div>
+          <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            {balance.loading ? 'Loading...' : `${balance.sol.toFixed(4)} SOL`}
           </span>
         </div>
         <button
