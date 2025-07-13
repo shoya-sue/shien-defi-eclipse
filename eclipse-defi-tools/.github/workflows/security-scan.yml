@@ -1,0 +1,51 @@
+name: Security Scan
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 毎週月曜日の午前9時（UTC）に実行
+    - cron: '0 9 * * 1'
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci --legacy-peer-deps
+    
+    - name: Run npm audit
+      run: npm audit --production
+      continue-on-error: true
+    
+    - name: Run dependency check
+      run: |
+        npx npm-check-updates
+        echo "## Outdated Dependencies" >> $GITHUB_STEP_SUMMARY
+        npx npm-check-updates >> $GITHUB_STEP_SUMMARY
+    
+    - name: Check for secrets
+      run: |
+        # シークレットやAPIキーが誤ってコミットされていないかチェック
+        if grep -r "PRIVATE_KEY\|SECRET_KEY\|API_KEY" --exclude-dir=node_modules --exclude-dir=.git --exclude="*.yml" .; then
+          echo "⚠️ Potential secrets found in code!" >> $GITHUB_STEP_SUMMARY
+          exit 1
+        else
+          echo "✅ No secrets found in code" >> $GITHUB_STEP_SUMMARY
+        fi
+    
+    - name: Security summary
+      if: always()
+      run: |
+        echo "## Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- Scan date: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY

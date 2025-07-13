@@ -1,0 +1,67 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_message:
+        description: 'Deployment message'
+        required: false
+        default: 'Manual deployment'
+      dry_run:
+        description: 'Perform a dry run (no actual deployment)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci --legacy-peer-deps
+    
+    - name: Run tests
+      run: npm test -- --run
+    
+    - name: Build for production
+      run: npm run build
+      env:
+        NODE_ENV: production
+        REACT_APP_ENV: production
+        REACT_APP_ECLIPSE_WS_URL: ${{ secrets.ECLIPSE_WS_URL }}
+        REACT_APP_ECLIPSE_RPC_URL: ${{ secrets.ECLIPSE_RPC_URL }}
+    
+    - name: Deploy preview
+      if: ${{ github.event.inputs.dry_run == 'true' }}
+      run: |
+        echo "🔍 Dry run mode - no actual deployment"
+        echo "Build artifacts:"
+        ls -la dist/
+    
+    - name: Deploy to hosting
+      if: ${{ github.event.inputs.dry_run == 'false' }}
+      run: |
+        echo "🚀 Deploying to production..."
+        # ここに実際のデプロイコマンドを追加
+        # 例: Vercel, Netlify, AWS S3など
+    
+    - name: Deployment summary
+      if: always()
+      run: |
+        echo "## Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- Message: ${{ github.event.inputs.deploy_message }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Dry run: ${{ github.event.inputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Deployed by: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
