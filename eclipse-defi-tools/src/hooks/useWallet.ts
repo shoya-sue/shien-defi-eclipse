@@ -1,10 +1,20 @@
 import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { LAMPORTS_PER_SOL, Transaction } from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, Transaction, PublicKey } from '@solana/web3.js';
+import { AccountLayout, getAssociatedTokenAddress } from '@solana/spl-token';
 import { useState, useEffect, useCallback } from 'react';
+import type { Token } from '../types';
+
+export interface TokenBalance {
+  token: Token;
+  balance: number;
+  uiBalance: string;
+  decimals: number;
+}
 
 export interface WalletBalance {
   sol: number;
+  tokens: TokenBalance[];
   loading: boolean;
   error: string | null;
 }
@@ -14,31 +24,85 @@ export const useWallet = () => {
   const wallet = useSolanaWallet();
   const [balance, setBalance] = useState<WalletBalance>({
     sol: 0,
+    tokens: [],
     loading: false,
     error: null,
   });
 
-  const fetchBalance = useCallback(async () => {
+  const fetchTokenBalance = useCallback(async (tokenInfo: Token): Promise<TokenBalance | null> => {
+    if (!wallet.publicKey) return null;
+
+    try {
+      const tokenAddress = new PublicKey(tokenInfo.address);
+      const associatedTokenAddress = await getAssociatedTokenAddress(
+        tokenAddress,
+        wallet.publicKey
+      );
+
+      const accountInfo = await connection.getAccountInfo(associatedTokenAddress);
+      if (!accountInfo || accountInfo.data.length === 0) {
+        return {
+          token: tokenInfo,
+          balance: 0,
+          uiBalance: '0',
+          decimals: tokenInfo.decimals,
+        };
+      }
+
+      const accountData = AccountLayout.decode(accountInfo.data);
+      const balance = Number(accountData.amount);
+      const uiBalance = (balance / Math.pow(10, tokenInfo.decimals)).toFixed(tokenInfo.decimals);
+
+      return {
+        token: tokenInfo,
+        balance,
+        uiBalance,
+        decimals: tokenInfo.decimals,
+      };
+    } catch (error) {
+      console.error(`Error fetching balance for ${tokenInfo.symbol}:`, error);
+      return null;
+    }
+  }, [connection, wallet.publicKey]);
+
+  const fetchAllBalances = useCallback(async (tokens: Token[] = []) => {
     if (!wallet.publicKey) {
-      setBalance({ sol: 0, loading: false, error: null });
+      setBalance({ sol: 0, tokens: [], loading: false, error: null });
       return;
     }
 
     setBalance(prev => ({ ...prev, loading: true, error: null }));
 
     try {
+      // Fetch SOL balance
       const lamports = await connection.getBalance(wallet.publicKey);
       const sol = lamports / LAMPORTS_PER_SOL;
-      setBalance({ sol, loading: false, error: null });
+
+      // Fetch token balances in parallel
+      const tokenBalancePromises = tokens.map(token => fetchTokenBalance(token));
+      const tokenBalances = await Promise.all(tokenBalancePromises);
+      const validTokenBalances = tokenBalances.filter((tb): tb is TokenBalance => tb !== null);
+
+      setBalance({
+        sol,
+        tokens: validTokenBalances,
+        loading: false,
+        error: null,
+      });
     } catch (error) {
-      console.error('Error fetching balance:', error);
+      console.error('Error fetching balances:', error);
       setBalance({
         sol: 0,
+        tokens: [],
         loading: false,
-        error: 'Failed to fetch balance',
+        error: 'Failed to fetch balances',
       });
     }
-  }, [connection, wallet.publicKey]);
+  }, [connection, wallet.publicKey, fetchTokenBalance]);
+
+  const fetchBalance = useCallback(async () => {
+    await fetchAllBalances();
+  }, [fetchAllBalances]);
 
   useEffect(() => {
     if (wallet.connected && wallet.publicKey) {
@@ -76,10 +140,17 @@ export const useWallet = () => {
     [wallet]
   );
 
+  const getTokenBalance = useCallback((tokenAddress: string): TokenBalance | undefined => {
+    return balance.tokens.find(tb => tb.token.address === tokenAddress);
+  }, [balance.tokens]);
+
   return {
     ...wallet,
     balance,
     fetchBalance,
+    fetchAllBalances,
+    fetchTokenBalance,
+    getTokenBalance,
     signTransaction,
     signAllTransactions,
     signMessage,
