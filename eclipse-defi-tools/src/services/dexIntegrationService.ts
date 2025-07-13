@@ -46,19 +46,29 @@ class DEXIntegrationService {
       });
 
       if (!response.ok) {
-        throw new Error(`Jupiter swap API error: ${response.status}`);
+        const errorBody = await response.text();
+        console.error('Jupiter swap API error:', errorBody);
+        throw new Error(`Jupiter swap API error: ${response.status} - ${errorBody}`);
       }
 
       const data = await response.json();
       
+      // エラーレスポンスの確認
+      if (data.error) {
+        throw new Error(`Jupiter API error: ${data.error}`);
+      }
+      
       return {
-        instructions: data.swapTransaction.instructions || [],
-        signers: data.swapTransaction.signers || [],
-        recentBlockhash: data.swapTransaction.recentBlockhash || '',
+        instructions: data.swapTransaction?.instructions || [],
+        signers: data.swapTransaction?.signers || [],
+        recentBlockhash: data.swapTransaction?.recentBlockhash || '',
       };
     } catch (error) {
       console.error('Jupiter swap instructions error:', error);
-      throw error;
+      if (error instanceof Error) {
+        throw new Error(`Jupiter swap failed: ${error.message}`);
+      }
+      throw new Error('Jupiter swap failed: Unknown error');
     }
   }
 
@@ -85,7 +95,9 @@ class DEXIntegrationService {
       });
 
       if (!response.ok) {
-        throw new Error(`Orca swap API error: ${response.status}`);
+        const errorBody = await response.text();
+        console.error('Orca swap API error:', errorBody);
+        throw new Error(`Orca swap API error: ${response.status} - ${errorBody}`);
       }
 
       const data = await response.json();
@@ -97,7 +109,10 @@ class DEXIntegrationService {
       };
     } catch (error) {
       console.error('Orca swap instructions error:', error);
-      throw error;
+      if (error instanceof Error) {
+        throw new Error(`Orca swap failed: ${error.message}`);
+      }
+      throw new Error('Orca swap failed: Unknown error');
     }
   }
 
@@ -124,7 +139,9 @@ class DEXIntegrationService {
       });
 
       if (!response.ok) {
-        throw new Error(`Raydium swap API error: ${response.status}`);
+        const errorBody = await response.text();
+        console.error('Raydium swap API error:', errorBody);
+        throw new Error(`Raydium swap API error: ${response.status} - ${errorBody}`);
       }
 
       const data = await response.json();
@@ -136,7 +153,10 @@ class DEXIntegrationService {
       };
     } catch (error) {
       console.error('Raydium swap instructions error:', error);
-      throw error;
+      if (error instanceof Error) {
+        throw new Error(`Raydium swap failed: ${error.message}`);
+      }
+      throw new Error('Raydium swap failed: Unknown error');
     }
   }
 
@@ -357,7 +377,12 @@ class DEXIntegrationService {
   ): Promise<{ balance: number; exists: boolean }> {
     try {
       // Eclipse RPC call to get token account info
-      const response = await fetch(process.env.REACT_APP_ECLIPSE_RPC_URL || '', {
+      const rpcUrl = process.env.REACT_APP_ECLIPSE_RPC_URL || 'https://eclipse-mainnet.rpcpool.com';
+      if (!rpcUrl) {
+        throw new Error('Eclipse RPC URL not configured');
+      }
+      
+      const response = await fetch(rpcUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -397,6 +422,10 @@ class DEXIntegrationService {
       return { balance, exists: true };
     } catch (error) {
       console.error('Token account info error:', error);
+      // ネットワークエラーの場合は再試行可能とマーク
+      if (error instanceof Error && error.message.includes('fetch')) {
+        console.warn('Network error fetching token info, returning default');
+      }
       return { balance: 0, exists: false };
     }
   }
