@@ -5,7 +5,14 @@ import { formatTokenAmount, formatPercentage, validateAmount } from '../../utils
 import { useSwapQuotes } from '../../hooks/useSwapQuotes';
 import { useWallet } from '../../hooks/useWallet';
 import { useSecurityContext } from '../../hooks/useSecurityContext';
+import { useJupiterApi } from '../../hooks/useJupiterApi';
+import { useOrcaApi } from '../../hooks/useOrcaApi';
 // import { useRealtimeData } from '../../services/realtimeService';
+import { 
+  swapExecutionService, 
+  type SwapExecutionOptions, 
+  type SwapConfirmation
+} from '../../services/swapExecutionService';
 import TokenSelector from '../Common/TokenSelector';
 import RealtimeIndicator from '../Common/RealtimeIndicator';
 
@@ -16,9 +23,32 @@ export const SwapInterface: React.FC = () => {
   const [slippage, setSlippage] = useState<number>(0.5);
   const [showSlippageSettings, setShowSlippageSettings] = useState(false);
   
+  // スワップ実行関連の状態
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [swapConfirmation, setSwapConfirmation] = useState<SwapConfirmation | null>(null);
+  const [isExecutingSwap, setIsExecutingSwap] = useState(false);
+  
   const { quotes, bestQuote, loading, error, fetchQuotes, clearQuotes } = useSwapQuotes();
   const { connected, balance, fetchAllBalances, getTokenBalance } = useWallet();
   const { sanitizeInput, auditInput } = useSecurityContext();
+  const { 
+    quotes: jupiterQuotes, 
+    quotesLoading: jupiterLoading, 
+    quotesError: jupiterError,
+    getQuote: getJupiterQuote,
+    isHealthy: jupiterHealthy,
+    clearQuotes: clearJupiterQuotes 
+  } = useJupiterApi();
+  
+  const { 
+    quotes: orcaQuotes, 
+    quotesLoading: orcaLoading, 
+    quotesError: orcaError,
+    getSwapQuote: getOrcaQuote,
+    isHealthy: orcaHealthy,
+    clearQuotes: clearOrcaQuotes 
+  } = useOrcaApi();
+  
   // リアルタイム機能は将来の実装で使用予定
   // const { subscribeToQuote } = useRealtimeData();
 
@@ -40,6 +70,35 @@ export const SwapInterface: React.FC = () => {
     }
   }, [inputAmount, inputToken, outputToken, slippage, fetchQuotes, clearQuotes]);
 
+  // Jupiter API統合のため、実際のAPIクォートも取得
+  useEffect(() => {
+    if (inputAmount && validateAmount(inputAmount) && jupiterHealthy) {
+      const amount = parseFloat(inputAmount);
+      const slippageBps = slippage * 100;
+      
+      // Jupiter APIからも並行してクォートを取得
+      getJupiterQuote(inputToken, outputToken, amount, slippageBps)
+        .then((jupiterQuotes) => {
+          console.log('Jupiter quotes received:', jupiterQuotes.length);
+        })
+        .catch((error) => {
+          console.warn('Jupiter quote failed (fallback to mock):', error.message);
+        });
+
+      // Orca APIからも並行してクォートを取得
+      getOrcaQuote(inputToken, outputToken, amount, slippageBps)
+        .then((orcaQuotes) => {
+          console.log('Orca quotes received:', orcaQuotes.length);
+        })
+        .catch((error) => {
+          console.warn('Orca quote failed (fallback to mock):', error.message);
+        });
+    } else {
+      clearJupiterQuotes();
+      clearOrcaQuotes();
+    }
+  }, [inputAmount, inputToken, outputToken, slippage, getJupiterQuote, clearJupiterQuotes, jupiterHealthy, getOrcaQuote, clearOrcaQuotes, orcaHealthy]);
+
   const handleInputAmountChange = (value: string) => {
     // セキュリティチェック
     if (!auditInput(value, 'swap_input_amount')) {
@@ -58,11 +117,65 @@ export const SwapInterface: React.FC = () => {
     setOutputToken(inputToken);
     setInputAmount('');
     clearQuotes();
+    clearJupiterQuotes();
+    clearOrcaQuotes();
   };
 
   const handleSlippageChange = (value: number) => {
     setSlippage(value);
     setShowSlippageSettings(false);
+  };
+
+  // スワップ実行ハンドラー
+  const handleSwapClick = async () => {
+    if (!bestQuote || !isValidAmount) return;
+
+    try {
+      // スワップ確認情報を取得
+      const confirmation = await swapExecutionService.prepareSwapConfirmation(bestQuote, {
+        slippageBps: slippage * 100,
+      });
+      
+      setSwapConfirmation(confirmation);
+      setShowConfirmModal(true);
+    } catch (error) {
+      console.error('Failed to prepare swap confirmation:', error);
+      alert(`スワップ準備に失敗しました: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleConfirmSwap = async () => {
+    if (!swapConfirmation || !isValidAmount) return;
+
+    try {
+      setIsExecutingSwap(true);
+      
+      const options: SwapExecutionOptions = {
+        slippageBps: slippage * 100,
+        priorityFee: 0.000005, // デフォルト優先手数料
+        skipSimulation: false,
+        maxRetries: 3,
+      };
+
+      const result = await swapExecutionService.executeOptimalSwap(
+        inputToken,
+        outputToken,
+        parseFloat(inputAmount),
+        options
+      );
+
+      setShowConfirmModal(false);
+      setInputAmount('');
+      
+      // 成功通知
+      alert(`スワップが完了しました!\nプロバイダー: ${result.provider}\n受取量: ${result.outputAmount.toFixed(6)} ${outputToken.symbol}\nトランザクション: ${result.signature}`);
+      
+    } catch (error) {
+      console.error('Swap execution failed:', error);
+      alert(`スワップに失敗しました: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsExecutingSwap(false);
+    }
   };
 
   const isValidAmount = inputAmount && validateAmount(inputAmount);
@@ -196,19 +309,31 @@ export const SwapInterface: React.FC = () => {
         </div>
 
         {/* Loading State */}
-        {loading && isValidAmount && (
+        {(loading || jupiterLoading || orcaLoading) && isValidAmount && (
           <div className="text-center py-4">
             <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
               最適なレートを検索中...
+              {jupiterLoading && <span className="block text-xs mt-1">Jupiter API取得中...</span>}
+              {orcaLoading && <span className="block text-xs mt-1">Orca API取得中...</span>}
             </p>
           </div>
         )}
 
         {/* Error State */}
-        {error && (
+        {(error || jupiterError || orcaError) && (
           <div className="text-center py-4">
-            <p className="text-red-600 dark:text-red-400">{error}</p>
+            {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
+            {jupiterError && (
+              <p className="text-orange-600 dark:text-orange-400 text-sm mt-1">
+                Jupiter API: {jupiterError}
+              </p>
+            )}
+            {orcaError && (
+              <p className="text-orange-600 dark:text-orange-400 text-sm mt-1">
+                Orca API: {orcaError}
+              </p>
+            )}
           </div>
         )}
 
@@ -248,9 +373,10 @@ export const SwapInterface: React.FC = () => {
 
         {/* Swap Button */}
         <button
-          disabled={!connected || !isValidAmount || loading}
+          onClick={handleSwapClick}
+          disabled={!connected || !isValidAmount || loading || jupiterLoading || orcaLoading || !bestQuote}
           className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-colors ${
-            !connected || !isValidAmount || loading
+            !connected || !isValidAmount || loading || jupiterLoading || orcaLoading || !bestQuote
               ? 'bg-gray-400 cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700'
           }`}
@@ -259,20 +385,24 @@ export const SwapInterface: React.FC = () => {
             ? 'ウォレットを接続してください'
             : !isValidAmount
             ? '金額を入力してください'
-            : loading
+            : loading || jupiterLoading || orcaLoading
             ? 'レートを取得中...'
+            : !bestQuote
+            ? 'レートが見つかりません'
             : 'スワップ実行'}
         </button>
 
-        {/* All Quotes */}
-        {quotes.length > 0 && !loading && (
+        {/* All Quotes - Mock + Jupiter + Orca */}
+        {(quotes.length > 0 || jupiterQuotes.length > 0 || orcaQuotes.length > 0) && !loading && !jupiterLoading && !orcaLoading && (
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-gray-900 dark:text-white">
               全DEX比較
             </h3>
+            
+            {/* Mock quotes */}
             {quotes.map((quote, index) => (
               <div
-                key={index}
+                key={`mock-${index}`}
                 className={`border rounded-lg p-3 ${
                   quote === bestQuote
                     ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
@@ -282,7 +412,10 @@ export const SwapInterface: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-gray-900 dark:text-white">
-                      {quote.dex}
+                      {quote.provider || 'Mock DEX'}
+                    </span>
+                    <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded">
+                      モック
                     </span>
                     {quote === bestQuote && (
                       <span className="text-xs bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 px-2 py-1 rounded">
@@ -301,9 +434,191 @@ export const SwapInterface: React.FC = () => {
                 </div>
               </div>
             ))}
+            
+            {/* Jupiter quotes */}
+            {jupiterQuotes.map((quote, index) => (
+              <div
+                key={`jupiter-${index}`}
+                className="border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {quote.provider}
+                    </span>
+                    <span className="text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                      実際のAPI
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {formatTokenAmount(quote.outputAmount, quote.outputToken)}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      影響: {formatPercentage(quote.priceImpact)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            {/* Orca quotes */}
+            {orcaQuotes.map((quote, index) => (
+              <div
+                key={`orca-${index}`}
+                className="border border-purple-200 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {quote.provider}
+                    </span>
+                    <span className="text-xs bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-200 px-2 py-1 rounded">
+                      実際のAPI
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-medium text-gray-900 dark:text-white">
+                      {formatTokenAmount(quote.outputAmount, quote.outputToken)}
+                    </div>
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                      影響: {formatPercentage(quote.priceImpact)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
+
+      {/* スワップ確認モーダル */}
+      {showConfirmModal && swapConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                スワップ確認
+              </h3>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* スワップ詳細 */}
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">送信</span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {inputAmount} {inputToken.symbol}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-center">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">受取予定</span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {swapConfirmation.quote.outputAmount.toFixed(6)} {outputToken.symbol}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">最小受取量</span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {swapConfirmation.minimumReceived.toFixed(6)} {outputToken.symbol}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">価格影響</span>
+                    <span className={`font-medium ${
+                      swapConfirmation.priceImpactWarning ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'
+                    }`}>
+                      {formatPercentage(swapConfirmation.quote.priceImpact)}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">推定ガス手数料</span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {swapConfirmation.estimatedGasFee.toFixed(6)} SOL
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-300">プロバイダー</span>
+                    <span className="font-medium text-gray-900 dark:text-white">
+                      {swapConfirmation.quote.dex}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 警告表示 */}
+              {swapConfirmation.recommendation === 'high_risk' && (
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    <span className="text-sm font-medium text-red-800 dark:text-red-200">
+                      高リスク取引
+                    </span>
+                  </div>
+                  <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                    価格影響が大きいか、流動性が低い可能性があります。
+                  </p>
+                </div>
+              )}
+
+              {swapConfirmation.recommendation === 'caution' && (
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                    <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                      注意が必要
+                    </span>
+                  </div>
+                  <p className="text-sm text-yellow-600 dark:text-yellow-400 mt-1">
+                    価格影響を確認してください。
+                  </p>
+                </div>
+              )}
+
+              {/* 実行ボタン */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                >
+                  キャンセル
+                </button>
+                <button
+                  onClick={handleConfirmSwap}
+                  disabled={isExecutingSwap}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  {isExecutingSwap ? 'スワップ実行中...' : 'スワップ実行'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
