@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { formatPercentage } from '../../utils';
 import type { UserSettings } from '../../types';
+import PerformanceDashboard from '../Performance/PerformanceDashboard';
 
 const defaultSettings: UserSettings = {
   theme: 'system',
@@ -41,7 +42,7 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
   settings,
   onSettingsChange,
 }) => {
-  const [activeTab, setActiveTab] = useState<'general' | 'notifications' | 'privacy' | 'advanced'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'notifications' | 'privacy' | 'advanced' | 'performance'>('general');
 
   const handleSettingChange = <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
     onSettingsChange({
@@ -128,10 +129,11 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
                   { id: 'notifications', label: '通知', icon: '🔔' },
                   { id: 'privacy', label: 'プライバシー', icon: '🔒' },
                   { id: 'advanced', label: '高度な設定', icon: '🛠️' },
+                  { id: 'performance', label: 'パフォーマンス', icon: '📊' },
                 ].map((tab) => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id as 'general' | 'notifications' | 'privacy' | 'advanced')}
+                    onClick={() => setActiveTab(tab.id as 'general' | 'notifications' | 'privacy' | 'advanced' | 'performance')}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-left ${
                       activeTab === tab.id
                         ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
@@ -422,6 +424,12 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
                       </label>
                     </div>
                   </div>
+                </div>
+              )}
+              
+              {activeTab === 'performance' && (
+                <div>
+                  <PerformanceDashboard />
                 </div>
               )}
             </div>

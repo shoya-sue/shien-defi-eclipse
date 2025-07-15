@@ -15,8 +15,12 @@ export interface SwapQuote {
   priceImpact: number;
   fee: number;
   route: string[];
-  dex: string;
+  dex?: string;
+  provider?: string;
   estimatedGas: number;
+  minimumReceived?: number;
+  exchangeRate: number;
+  timestamp: number;
 }
 
 export interface PoolData {

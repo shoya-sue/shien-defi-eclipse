@@ -67,16 +67,19 @@ class DEXService {
 
       const data: JupiterQuoteResponse = await response.json();
       
+      const outputAmount = parseInt(data.outAmount) / Math.pow(10, outputToken.decimals);
       const quote: SwapQuote = {
         inputToken,
         outputToken,
         inputAmount: amount,
-        outputAmount: parseInt(data.outAmount) / Math.pow(10, outputToken.decimals),
+        outputAmount,
         priceImpact: data.priceImpactPct,
         fee: DEX_CONFIGS.jupiter.fee,
         route: data.routePlan.map(plan => plan.swapInfo.label),
         dex: 'Jupiter',
         estimatedGas: 0.005, // SOL estimate
+        exchangeRate: outputAmount / amount,
+        timestamp: Date.now()
       };
 
       this.cache.set(cacheKey, { data: quote, timestamp: Date.now() });
@@ -116,16 +119,19 @@ class DEXService {
 
       const data: OrcaQuoteResponse = await response.json();
       
+      const outputAmount = parseInt(data.outputAmount) / Math.pow(10, outputToken.decimals);
       const quote: SwapQuote = {
         inputToken,
         outputToken,
         inputAmount: amount,
-        outputAmount: parseInt(data.outputAmount) / Math.pow(10, outputToken.decimals),
+        outputAmount,
         priceImpact: data.priceImpact,
         fee: DEX_CONFIGS.orca.fee,
         route: data.route,
         dex: 'Orca',
         estimatedGas: 0.004, // SOL estimate
+        exchangeRate: outputAmount / amount,
+        timestamp: Date.now()
       };
 
       this.cache.set(cacheKey, { data: quote, timestamp: Date.now() });
@@ -165,16 +171,19 @@ class DEXService {
 
       const data = await response.json();
       
+      const outputAmount = data.outputAmount / Math.pow(10, outputToken.decimals);
       const quote: SwapQuote = {
         inputToken,
         outputToken,
         inputAmount: amount,
-        outputAmount: data.outputAmount / Math.pow(10, outputToken.decimals),
+        outputAmount,
         priceImpact: data.priceImpact || 0,
         fee: DEX_CONFIGS.raydium.fee,
         route: data.route || ['Direct'],
         dex: 'Raydium',
         estimatedGas: 0.0035, // SOL estimate
+        exchangeRate: outputAmount / amount,
+        timestamp: Date.now()
       };
 
       this.cache.set(cacheKey, { data: quote, timestamp: Date.now() });

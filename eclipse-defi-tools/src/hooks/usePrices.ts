@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Token, PriceData } from '../types';
 import { priceService } from '../services/priceService';
+import { performanceService } from '../services/performanceService';
+import { priceCache } from '../services/cacheService';
 
 export interface UsePricesReturn {
   prices: PriceData[];
@@ -17,12 +19,30 @@ export const usePrices = (tokens: Token[]): UsePricesReturn => {
   const fetchPrices = useCallback(async () => {
     if (tokens.length === 0) return;
 
+    // キャッシュキーの生成
+    const cacheKey = `prices_${tokens.map(t => t.address).sort().join('_')}`;
+    
+    // キャッシュから取得を試行
+    const cached = priceCache.get<PriceData[]>(cacheKey);
+    if (cached) {
+      setPrices(cached);
+      performanceService.recordCacheHit();
+      return;
+    }
+    
+    performanceService.recordCacheMiss();
     setLoading(true);
     setError(null);
 
     try {
-      const priceData = await priceService.getMultipleTokenPrices(tokens);
+      const priceData = await performanceService.measureAsync(
+        'fetch_prices',
+        () => priceService.getMultipleTokenPrices(tokens),
+        { tokenCount: tokens.length }
+      );
+      
       setPrices(priceData);
+      priceCache.set(cacheKey, priceData, 60 * 1000); // 1分間キャッシュ
       setError(null); // 成功時はエラーをクリア
     } catch (err) {
       console.error('Price fetch error:', err);

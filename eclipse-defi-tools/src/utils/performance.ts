@@ -49,7 +49,7 @@ export function memoize<T extends (...args: unknown[]) => unknown>(
     }
     
     const result = fn(...args);
-    cache.set(key, result);
+    cache.set(key, result as ReturnType<T>);
     return result;
   }) as T;
 }

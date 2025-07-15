@@ -2,7 +2,7 @@ import { useWallet as useSolanaWallet } from '@solana/wallet-adapter-react';
 import { useConnection } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL, Transaction, PublicKey } from '@solana/web3.js';
 import { AccountLayout } from '@solana/spl-token';
-import { getAssociatedTokenAddressSync } from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useState, useEffect, useCallback } from 'react';
 import type { Token } from '../types';
 
@@ -35,9 +35,14 @@ export const useWallet = () => {
 
     try {
       const tokenAddress = new PublicKey(tokenInfo.address);
-      const associatedTokenAddress = getAssociatedTokenAddressSync(
-        tokenAddress,
-        wallet.publicKey
+      // Calculate associated token address manually for older SPL token version
+      const [associatedTokenAddress] = await PublicKey.findProgramAddress(
+        [
+          wallet.publicKey.toBuffer(),
+          TOKEN_PROGRAM_ID.toBuffer(),
+          tokenAddress.toBuffer(),
+        ],
+        new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL') // Associated Token Program ID
       );
 
       const accountInfo = await connection.getAccountInfo(associatedTokenAddress);
