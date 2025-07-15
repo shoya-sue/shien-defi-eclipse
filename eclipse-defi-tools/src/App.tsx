@@ -1,4 +1,4 @@
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import WalletConnector from './components/Common/WalletConnector';
 import WalletButton from './components/Common/WalletButton';
 import RealtimeIndicator from './components/Common/RealtimeIndicator';
@@ -11,19 +11,27 @@ import SecurityProvider from './components/Common/SecurityProvider';
 import {
   LazySwapInterface,
   LazyLiquidityCalculator,
+  LazyLiquidityAnalysis,
   LazyYieldTracker,
   LazyPnLCalculator,
   LazyUserSettings,
+  LazyTransactionHistory,
+  LazyChartAnalysis,
+  LazyDeFiDashboard,
+  LazyMultiChainDashboard,
+  LazyAutoTradingDashboard,
   ComponentLoader,
   SettingsLoader
 } from './components/LazyComponents';
+import PriceAlertManager from './components/PriceAlerts/PriceAlertManager';
 import type { UserSettings as UserSettingsType } from './types';
 import { COMMON_TOKENS } from './constants';
 import { usePrices } from './hooks/usePrices';
 import { useSettings } from './hooks/useSettings';
 import { formatPrice, formatPercentage } from './utils';
+import { priceAlertService } from './services/priceAlertService';
 
-type ActiveTab = 'swap' | 'pools' | 'farming' | 'pnl' | 'prices';
+type ActiveTab = 'swap' | 'pools' | 'farming' | 'pnl' | 'prices' | 'analysis' | 'alerts' | 'history' | 'charts' | 'defi' | 'multichain' | 'autotrading';
 
 function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('swap');
@@ -31,6 +39,17 @@ function App() {
   const [showSecurityDashboard, setShowSecurityDashboard] = useState(false);
   const { prices, loading, error } = usePrices(COMMON_TOKENS);
   const { settings, saveSettings } = useSettings();
+
+  // 価格データを価格アラートサービスに送信
+  useEffect(() => {
+    if (prices.length > 0) {
+      const priceMap: Record<string, number> = {};
+      prices.forEach(priceData => {
+        priceMap[priceData.token.address] = priceData.price;
+      });
+      priceAlertService.updatePrices(priceMap);
+    }
+  }, [prices]);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -56,6 +75,12 @@ function App() {
         return (
           <Suspense fallback={<ComponentLoader />}>
             <LazyPnLCalculator />
+          </Suspense>
+        );
+      case 'analysis':
+        return (
+          <Suspense fallback={<ComponentLoader />}>
+            <LazyLiquidityAnalysis />
           </Suspense>
         );
       case 'prices':
@@ -120,6 +145,38 @@ function App() {
             )}
           </div>
         );
+      case 'alerts':
+        return <PriceAlertManager />;
+      case 'history':
+        return (
+          <Suspense fallback={<ComponentLoader />}>
+            <LazyTransactionHistory />
+          </Suspense>
+        );
+      case 'charts':
+        return (
+          <Suspense fallback={<ComponentLoader />}>
+            <LazyChartAnalysis />
+          </Suspense>
+        );
+      case 'defi':
+        return (
+          <Suspense fallback={<ComponentLoader />}>
+            <LazyDeFiDashboard />
+          </Suspense>
+        );
+      case 'multichain':
+        return (
+          <Suspense fallback={<ComponentLoader />}>
+            <LazyMultiChainDashboard />
+          </Suspense>
+        );
+      case 'autotrading':
+        return (
+          <Suspense fallback={<ComponentLoader />}>
+            <LazyAutoTradingDashboard />
+          </Suspense>
+        );
       default:
         return null;
     }
@@ -174,9 +231,16 @@ function App() {
               {[
                 { id: 'swap', label: 'スワップ', icon: '💱' },
                 { id: 'pools', label: '流動性プール', icon: '💧' },
+                { id: 'analysis', label: 'プール分析', icon: '📈' },
                 { id: 'farming', label: 'ファーミング', icon: '🌾' },
                 { id: 'pnl', label: 'PnL', icon: '📊' },
                 { id: 'prices', label: '価格', icon: '💰' },
+                { id: 'alerts', label: '価格アラート', icon: '🔔' },
+                { id: 'history', label: '取引履歴', icon: '📜' },
+                { id: 'charts', label: 'チャート分析', icon: '📉' },
+                { id: 'defi', label: 'DeFi統合', icon: '🏦' },
+                { id: 'multichain', label: 'マルチチェーン', icon: '🌐' },
+                { id: 'autotrading', label: '自動取引', icon: '🤖' },
               ].map((tab) => (
                 <button
                   key={tab.id}

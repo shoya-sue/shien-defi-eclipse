@@ -3,9 +3,15 @@ import { lazy } from 'react';
 // 遅延読み込みコンポーネント
 export const LazySwapInterface = lazy(() => import('./SwapComparison/SwapInterface'));
 export const LazyLiquidityCalculator = lazy(() => import('./LiquidityCalculator/LiquidityCalculator'));
+export const LazyLiquidityAnalysis = lazy(() => import('./Liquidity/LiquidityAnalysis'));
 export const LazyYieldTracker = lazy(() => import('./YieldTracker/YieldTracker'));
 export const LazyPnLCalculator = lazy(() => import('./PnLCalculator/PnLCalculator'));
 export const LazyUserSettings = lazy(() => import('./Common/UserSettings'));
+export const LazyTransactionHistory = lazy(() => import('./TransactionHistory/TransactionHistory'));
+export const LazyChartAnalysis = lazy(() => import('./ChartAnalysis/ChartAnalysis'));
+export const LazyDeFiDashboard = lazy(() => import('./DeFi/DeFiDashboard'));
+export const LazyMultiChainDashboard = lazy(() => import('./MultiChain/MultiChainDashboard'));
+export const LazyAutoTradingDashboard = lazy(() => import('./AutoTrading/AutoTradingDashboard'));
 
 // 共通ローディングコンポーネント
 export const ComponentLoader = () => (
