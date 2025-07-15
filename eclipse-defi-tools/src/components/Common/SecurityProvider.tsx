@@ -1,34 +1,13 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSecurity } from '../../hooks/useSecurity';
-import { sanitizeInput, preventXSS, type SecurityEvent } from '../../utils/security';
-
-interface SecurityContextType {
-  auditInput: (input: string, context: string) => boolean;
-  auditURL: (url: string) => boolean;
-  auditRateLimit: (identifier: string) => boolean;
-  sanitizeInput: (input: string) => string;
-  preventXSS: (content: string) => string;
-  getSecurityReport: () => {
-    totalEvents: number;
-    eventsByType: Record<string, number>;
-    eventsBySeverity: Record<string, number>;
-    recentEvents: SecurityEvent[];
-  };
-}
-
-const SecurityContext = createContext<SecurityContextType | null>(null);
-
-export const useSecurityContext = () => {
-  const context = useContext(SecurityContext);
-  if (!context) {
-    throw new Error('useSecurityContext must be used within a SecurityProvider');
-  }
-  return context;
-};
+import { sanitizeInput, preventXSS } from '../../utils/security';
+import { SecurityContext, type SecurityContextType } from '../../contexts/SecurityContext';
 
 interface SecurityProviderProps {
   children: React.ReactNode;
 }
+
+export type { SecurityContextType };
 
 const SecurityProvider: React.FC<SecurityProviderProps> = ({ children }) => {
   const { auditInput, auditURL, auditRateLimit, getSecurityReport } = useSecurity();

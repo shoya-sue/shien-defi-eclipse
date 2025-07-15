@@ -4,7 +4,7 @@ import { COMMON_TOKENS } from '../../constants';
 import { formatTokenAmount, formatPercentage, validateAmount } from '../../utils';
 import { useSwapQuotes } from '../../hooks/useSwapQuotes';
 import { useWallet } from '../../hooks/useWallet';
-import { useSecurityContext } from '../Common/SecurityProvider';
+import { useSecurityContext } from '../../hooks/useSecurityContext';
 // import { useRealtimeData } from '../../services/realtimeService';
 import TokenSelector from '../Common/TokenSelector';
 import RealtimeIndicator from '../Common/RealtimeIndicator';

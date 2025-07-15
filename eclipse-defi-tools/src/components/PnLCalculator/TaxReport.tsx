@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import { formatNumber, formatDate } from '../../utils';
 import { usePnLCalculation } from '../../hooks/usePnLCalculation';
+import type { Transaction, TransactionToken } from '../../types';
+
+interface TaxReportData {
+  totalGains: number;
+  totalLosses: number;
+  shortTermGains: number;
+  longTermGains: number;
+  taxableEvents: Transaction[];
+}
 
 export const TaxReport: React.FC = () => {
   const { generateTaxReport, exportData } = usePnLCalculation();
   const [taxYear, setTaxYear] = useState(new Date().getFullYear());
   const [country, setCountry] = useState('US');
-  const [taxReport, setTaxReport] = useState<any>(null);
+  const [taxReport, setTaxReport] = useState<TaxReportData | null>(null);
   const [exportLoading, setExportLoading] = useState(false);
 
   const handleGenerateReport = () => {
@@ -220,14 +229,14 @@ export const TaxReport: React.FC = () => {
             </h4>
             
             <div className="space-y-2 max-h-64 overflow-y-auto">
-              {taxReport.taxableEvents.map((tx: any, index: number) => (
+              {taxReport.taxableEvents.map((tx: Transaction, index: number) => (
                 <div
                   key={index}
                   className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex -space-x-2">
-                      {tx.tokens.slice(0, 2).map((token: any, i: number) => (
+                      {tx.tokens.slice(0, 2).map((token: TransactionToken, i: number) => (
                         token.token.logoURI && (
                           <img
                             key={i}
@@ -250,7 +259,7 @@ export const TaxReport: React.FC = () => {
                   
                   <div className="text-right">
                     <div className="font-medium text-gray-900 dark:text-white">
-                      {tx.tokens.map((token: any, i: number) => (
+                      {tx.tokens.map((token: TransactionToken, i: number) => (
                         <span key={i} className="block">
                           {token.isInput ? '-' : '+'}
                           {formatNumber(token.amount, 4)} {token.token.symbol}

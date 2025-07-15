@@ -5,6 +5,31 @@ import { dexService } from './dexService';
 import { poolService } from './poolService';
 import { farmingService } from './farmingService';
 
+// WebSocket message types
+interface WebSocketMessage {
+  type: 'price_update' | 'quote_update' | 'pool_update' | 'farming_update' | 'heartbeat';
+  token?: string;
+  price?: number;
+  quote?: SwapQuote;
+  pool?: PoolData;
+  position?: FarmingPosition;
+  timestamp?: number;
+}
+
+// Subscription parameter types
+type SubscriptionParams = 
+  | { token: Token } // for price
+  | { inputToken: Token; outputToken: Token; amount: number } // for quote
+  | { poolId: string } // for pool
+  | { userAddress: string; poolId?: string }; // for farming
+
+// Subscription callback types
+type SubscriptionCallback = 
+  | ((price: number) => void)
+  | ((quotes: SwapQuote[]) => void)
+  | ((pool: PoolData) => void)
+  | ((positions: FarmingPosition[]) => void);
+
 export interface RealtimeData {
   prices: Map<string, number>;
   quotes: Map<string, SwapQuote>;
@@ -16,8 +41,8 @@ export interface RealtimeData {
 export interface RealtimeSubscription {
   id: string;
   type: 'price' | 'quote' | 'pool' | 'farming';
-  params: any;
-  callback: (data: any) => void;
+  params: SubscriptionParams;
+  callback: SubscriptionCallback;
   interval: number;
   enabled: boolean;
 }
@@ -92,7 +117,7 @@ class RealtimeService {
     }
   }
 
-  private handleWebSocketMessage(message: any) {
+  private handleWebSocketMessage(message: WebSocketMessage) {
     switch (message.type) {
       case 'price_update':
         this.data.prices.set(message.token, message.price);
@@ -138,7 +163,7 @@ class RealtimeService {
     }
   }
 
-  private notifySubscribers(type: string, _key: string, data: any) {
+  private notifySubscribers(type: string, _key: string, data: number | SwapQuote | PoolData | FarmingPosition) {
     for (const [id, subscription] of this.subscriptions) {
       if (subscription.type === type && subscription.enabled) {
         try {
@@ -419,7 +444,7 @@ export const useRealtimeData = () => {
 
   useEffect(() => {
     const checkConnection = () => {
-      const ws = (realtimeService as any).ws;
+      const ws = (realtimeService as RealtimeService & { ws: WebSocket | null }).ws;
       setIsConnected(ws && ws.readyState === WebSocket.OPEN);
     };
 

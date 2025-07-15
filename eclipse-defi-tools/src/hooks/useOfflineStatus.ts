@@ -1,5 +1,20 @@
 import { useState, useEffect } from 'react';
 
+// Network Information API types
+interface NetworkInformation extends EventTarget {
+  readonly downlink?: number;
+  readonly effectiveType?: 'slow-2g' | '2g' | '3g' | '4g';
+  readonly rtt?: number;
+  readonly saveData?: boolean;
+  readonly type?: 'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
+  addEventListener(type: 'change', listener: EventListener): void;
+  removeEventListener(type: 'change', listener: EventListener): void;
+}
+
+interface NavigatorWithConnection extends Navigator {
+  connection?: NetworkInformation;
+}
+
 export interface OfflineStatus {
   isOnline: boolean;
   isOffline: boolean;
@@ -21,7 +36,7 @@ export const useOfflineStatus = (): OfflineStatus => {
 
   useEffect(() => {
     const updateNetworkStatus = () => {
-      const connection = (navigator as any).connection;
+      const connection = (navigator as NavigatorWithConnection).connection;
       
       setStatus(prev => ({
         ...prev,
@@ -54,7 +69,7 @@ export const useOfflineStatus = (): OfflineStatus => {
     window.addEventListener('offline', handleOffline);
     
     // Connection API のサポートチェック
-    const connection = (navigator as any).connection;
+    const connection = (navigator as NavigatorWithConnection).connection;
     if (connection) {
       connection.addEventListener('change', handleConnectionChange);
     }

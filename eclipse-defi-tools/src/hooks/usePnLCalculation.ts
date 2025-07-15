@@ -11,7 +11,13 @@ export interface UsePnLCalculationReturn {
   fetchTransactions: (userAddress: string, filter?: TransactionFilter) => Promise<void>;
   calculatePnL: (method?: PnLCalculationMethod) => Promise<void>;
   exportData: (format: 'csv' | 'json') => Promise<string>;
-  generateTaxReport: (taxYear: number, country?: string) => any;
+  generateTaxReport: (taxYear: number, country?: string) => {
+    totalGains: number;
+    totalLosses: number;
+    shortTermGains: number;
+    longTermGains: number;
+    taxableEvents: Transaction[];
+  };
 }
 
 export const usePnLCalculation = (): UsePnLCalculationReturn => {

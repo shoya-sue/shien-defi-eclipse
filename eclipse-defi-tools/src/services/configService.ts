@@ -137,7 +137,7 @@ class ConfigService {
     if (typeof config === 'object' && config !== null) {
       const sanitized = {} as T;
       for (const [key, value] of Object.entries(config)) {
-        (sanitized as any)[key] = this.sanitizeConfig(value);
+        (sanitized as Record<string, unknown>)[key] = this.sanitizeConfig(value);
       }
       return sanitized;
     }

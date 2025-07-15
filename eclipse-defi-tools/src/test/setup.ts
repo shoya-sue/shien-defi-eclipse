@@ -19,7 +19,7 @@ Object.defineProperty(window, 'matchMedia', {
 // Mock Crypto API
 Object.defineProperty(window, 'crypto', {
   value: {
-    getRandomValues: (arr: any) => {
+    getRandomValues: (arr: Uint8Array | Uint16Array | Uint32Array) => {
       let bytes = arr.length;
       while (bytes--) {
         arr[bytes] = Math.floor(Math.random() * 256);
@@ -35,4 +35,4 @@ global.IntersectionObserver = class IntersectionObserver {
   disconnect() {}
   observe() {}
   unobserve() {}
-} as any;
+} as unknown as typeof IntersectionObserver;

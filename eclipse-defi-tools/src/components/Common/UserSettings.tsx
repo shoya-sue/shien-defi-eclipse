@@ -43,19 +43,19 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'general' | 'notifications' | 'privacy' | 'advanced'>('general');
 
-  const handleSettingChange = (key: keyof UserSettings, value: any) => {
+  const handleSettingChange = <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
     onSettingsChange({
       ...settings,
       [key]: value,
     });
   };
 
-  const handleNestedSettingChange = (
-    parentKey: keyof UserSettings,
-    childKey: string,
-    value: any
+  const handleNestedSettingChange = <K extends keyof UserSettings>(
+    parentKey: K,
+    childKey: keyof UserSettings[K],
+    value: UserSettings[K][keyof UserSettings[K]]
   ) => {
-    const parentValue = settings[parentKey] as any;
+    const parentValue = settings[parentKey] as Record<string, unknown>;
     onSettingsChange({
       ...settings,
       [parentKey]: {
@@ -91,7 +91,7 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
         try {
           const importedSettings = JSON.parse(e.target?.result as string);
           onSettingsChange({ ...defaultSettings, ...importedSettings });
-        } catch (error) {
+        } catch {
           alert('設定ファイルの読み込みに失敗しました。');
         }
       };
@@ -131,7 +131,7 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
                 ].map((tab) => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setActiveTab(tab.id as 'general' | 'notifications' | 'privacy' | 'advanced')}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-left ${
                       activeTab === tab.id
                         ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
@@ -163,7 +163,7 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
                         </label>
                         <select
                           value={settings.theme}
-                          onChange={(e) => handleSettingChange('theme', e.target.value)}
+                          onChange={(e) => handleSettingChange('theme', e.target.value as 'light' | 'dark' | 'system')}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         >
                           <option value="light">ライト</option>
@@ -178,7 +178,7 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
                         </label>
                         <select
                           value={settings.currency}
-                          onChange={(e) => handleSettingChange('currency', e.target.value)}
+                          onChange={(e) => handleSettingChange('currency', e.target.value as 'USD' | 'EUR' | 'JPY')}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         >
                           <option value="USD">USD ($)</option>
@@ -193,7 +193,7 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
                         </label>
                         <select
                           value={settings.language}
-                          onChange={(e) => handleSettingChange('language', e.target.value)}
+                          onChange={(e) => handleSettingChange('language', e.target.value as 'en' | 'ja')}
                           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         >
                           <option value="ja">日本語</option>

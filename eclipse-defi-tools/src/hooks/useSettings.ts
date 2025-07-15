@@ -92,10 +92,10 @@ export const useSettings = () => {
 
   const updateNestedSetting = <K extends keyof UserSettings>(
     parentKey: K,
-    childKey: string,
-    value: any
+    childKey: keyof UserSettings[K],
+    value: UserSettings[K][keyof UserSettings[K]]
   ) => {
-    const parentValue = settings[parentKey] as any;
+    const parentValue = settings[parentKey] as Record<string, unknown>;
     const newSettings = {
       ...settings,
       [parentKey]: {

@@ -16,14 +16,20 @@ export function formatNumber(
 }
 
 export function formatPrice(price: number, precision: number = PRECISION.price): string {
-  if (price === 0) return '0';
-  if (price < 0.01) return '<0.01';
+  if (price === 0) return '$0';
+  if (price >= 1000) {
+    return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+  if (price < 0.01) {
+    return `$${price.toPrecision(3)}`;
+  }
   return `$${formatNumber(price, precision)}`;
 }
 
 export function formatPercentage(value: number, precision: number = PRECISION.percentage): string {
-  const sign = value >= 0 ? '+' : '';
-  return `${sign}${formatNumber(value, precision)}%`;
+  if (value === 0) return '0.00%';
+  const sign = value > 0 ? '+' : '';
+  return `${sign}${value.toFixed(precision)}%`;
 }
 
 export function formatTokenAmount(
@@ -31,12 +37,13 @@ export function formatTokenAmount(
   token: Token,
   precision: number = PRECISION.amount
 ): string {
+  if (amount === 0) return `0 ${token.symbol}`;
   const formattedAmount = formatNumber(amount, precision);
   return `${formattedAmount} ${token.symbol}`;
 }
 
 export function formatAddress(address: string, length: number = 8): string {
-  if (address.length <= length) return address;
+  if (address.length <= length) return `${address.slice(0, 4)}...${address.slice(-4)}`;
   const start = address.slice(0, length / 2);
   const end = address.slice(-length / 2);
   return `${start}...${end}`;
@@ -76,19 +83,19 @@ export function calculateAPY(
 }
 
 export function calculateImpermanentLoss(priceRatio: number): number {
-  const newRatio = Math.sqrt(priceRatio);
-  const holdValue = priceRatio;
-  const lpValue = 2 * newRatio;
-  
-  return (lpValue / holdValue - 1) * 100;
+  if (priceRatio === 1) return 0;
+  const sqrt = Math.sqrt(priceRatio);
+  const il = (2 * sqrt / (1 + priceRatio) - 1) * 100;
+  return Math.abs(il);
 }
 
 export function calculatePriceImpact(
-  outputAmount: number,
-  expectedOutput: number
+  originalPrice: number,
+  newPrice: number
 ): number {
-  if (expectedOutput === 0) return 0;
-  return ((expectedOutput - outputAmount) / expectedOutput) * 100;
+  if (originalPrice === 0) return 0;
+  if (newPrice === 0) return 100;
+  return ((originalPrice - newPrice) / originalPrice) * 100;
 }
 
 export function calculateSlippage(

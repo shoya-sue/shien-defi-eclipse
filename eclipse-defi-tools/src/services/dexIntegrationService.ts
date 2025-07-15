@@ -1,9 +1,9 @@
 import type { Token, SwapQuote } from '../types';
 import { DEX_CONFIGS } from '../constants';
 
-export interface DEXResponse {
+export interface DEXResponse<T = unknown> {
   success: boolean;
-  data?: any;
+  data?: T;
   error?: string;
 }
 
@@ -432,9 +432,9 @@ class DEXIntegrationService {
 
   async estimateSwapFee(
     dex: string,
-    _inputToken: Token,
-    _outputToken: Token,
-    _amount: number
+    inputToken: Token,
+    outputToken: Token,
+    amount: number
   ): Promise<number> {
     try {
       const config = DEX_CONFIGS[dex];
@@ -446,7 +446,10 @@ class DEXIntegrationService {
       const baseFee = config.fee;
       
       // Add dynamic fee estimation based on liquidity, volatility, etc.
-      const dynamicFee = baseFee * 0.1; // 10% additional for complexity
+      // Fee can vary based on token pair and amount
+      const pairComplexity = inputToken.symbol === 'SOL' || outputToken.symbol === 'SOL' ? 1.0 : 1.2;
+      const amountFactor = amount > 1000 ? 1.1 : 1.0;
+      const dynamicFee = baseFee * 0.1 * pairComplexity * amountFactor;
       
       return baseFee + dynamicFee;
     } catch (error) {

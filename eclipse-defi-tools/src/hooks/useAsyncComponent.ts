@@ -8,7 +8,7 @@ interface AsyncComponentState<T> {
 
 export function useAsyncComponent<T>(
   importFunction: () => Promise<{ default: T }>,
-  deps: any[] = []
+  deps: React.DependencyList = []
 ): AsyncComponentState<T> {
   const [state, setState] = useState<AsyncComponentState<T>>({
     component: null,
@@ -48,7 +48,7 @@ export function useAsyncComponent<T>(
     return () => {
       isMounted = false;
     };
-  }, deps);
+  }, [importFunction, ...deps]);
 
   return state;
 }
@@ -61,8 +61,8 @@ export function preloadComponent<T>(
 }
 
 // 複数コンポーネントのプリロード
-export function preloadComponents(
-  importFunctions: Array<() => Promise<any>>
-): Promise<any[]> {
+export function preloadComponents<T = unknown>(
+  importFunctions: Array<() => Promise<{ default: T }>>
+): Promise<Array<{ default: T }>> {
   return Promise.all(importFunctions.map(fn => fn()));
 }

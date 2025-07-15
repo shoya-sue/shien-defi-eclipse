@@ -9,6 +9,7 @@ import {
   calculateImpermanentLoss,
   validateAmount,
 } from '../index';
+import type { Token } from '../../types';
 
 describe('Utility Functions', () => {
   describe('formatAddress', () => {
@@ -25,13 +26,25 @@ describe('Utility Functions', () => {
 
   describe('formatTokenAmount', () => {
     it('should format token amount with symbol', () => {
-      const token = { symbol: 'SOL', decimals: 9 };
-      expect(formatTokenAmount(1.234567, token as any)).toBe('1.235 SOL');
+      const token: Token = { 
+        address: 'So11111111111111111111111111111111111111112',
+        symbol: 'SOL', 
+        name: 'Solana',
+        decimals: 9,
+        chainId: 100
+      };
+      expect(formatTokenAmount(1.234567, token)).toBe('1.235 SOL');
     });
 
     it('should handle zero amount', () => {
-      const token = { symbol: 'USDC', decimals: 6 };
-      expect(formatTokenAmount(0, token as any)).toBe('0 USDC');
+      const token: Token = { 
+        address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        symbol: 'USDC', 
+        name: 'USD Coin',
+        decimals: 6,
+        chainId: 100
+      };
+      expect(formatTokenAmount(0, token)).toBe('0 USDC');
     });
   });
 

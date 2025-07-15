@@ -121,8 +121,8 @@ export const MAX_SLIPPAGE = 50; // 50%
 export const MIN_SLIPPAGE = 0.1; // 0.1%
 
 export const PRECISION = {
-  price: 6,
-  amount: 2,
+  price: 4,
+  amount: 3,
   percentage: 2,
   apy: 2,
 };

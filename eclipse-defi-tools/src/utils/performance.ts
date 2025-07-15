@@ -1,7 +1,7 @@
 // パフォーマンス最適化ユーティリティ
 
 // デバウンス関数
-export function debounce<T extends (...args: any[]) => void>(
+export function debounce<T extends (...args: unknown[]) => void>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -19,7 +19,7 @@ export function debounce<T extends (...args: any[]) => void>(
 }
 
 // スロットル関数
-export function throttle<T extends (...args: any[]) => void>(
+export function throttle<T extends (...args: unknown[]) => void>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
@@ -35,7 +35,7 @@ export function throttle<T extends (...args: any[]) => void>(
 }
 
 // メモ化関数
-export function memoize<T extends (...args: any[]) => any>(
+export function memoize<T extends (...args: unknown[]) => unknown>(
   fn: T,
   keyGenerator?: (...args: Parameters<T>) => string
 ): T {

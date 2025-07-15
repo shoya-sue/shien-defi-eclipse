@@ -65,7 +65,9 @@ class TransactionService {
     return response.json();
   }
 
-  private getMockTransactions(_userAddress: string): Transaction[] {
+  private getMockTransactions(userAddress: string): Transaction[] {
+    // Mock data for development - in production, filter by userAddress
+    console.log(`Fetching mock transactions for address: ${userAddress}`);
     const mockTokens = [
       { address: 'So11111111111111111111111111111111111111112', symbol: 'SOL', name: 'Solana', decimals: 9, chainId: 100 },
       { address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', symbol: 'USDC', name: 'USD Coin', decimals: 6, chainId: 100 },
@@ -206,7 +208,7 @@ class TransactionService {
     let totalCurrentValue = 0;
     let totalCostBasis = 0;
 
-    for (const [_tokenAddress, position] of positions) {
+    for (const [, position] of positions) {
       if (position.amount > 0) {
         const currentValue = position.amount * position.currentPrice;
         const costBasis = position.amount * position.averagePrice;
@@ -285,7 +287,7 @@ class TransactionService {
   generateTaxReport(
     transactions: Transaction[],
     taxYear: number,
-    _country: string = 'US'
+    country: string = 'US'
   ): {
     totalGains: number;
     totalLosses: number;
@@ -293,6 +295,8 @@ class TransactionService {
     longTermGains: number;
     taxableEvents: Transaction[];
   } {
+    // Tax calculation rules may vary by country (US, EU, etc.)
+    console.log(`Generating tax report for ${country} tax jurisdiction`);
     const yearStart = new Date(taxYear, 0, 1).getTime();
     const yearEnd = new Date(taxYear + 1, 0, 1).getTime();
     
