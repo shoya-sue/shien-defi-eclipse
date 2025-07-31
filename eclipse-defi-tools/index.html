@@ -39,7 +39,15 @@
     <!-- iOS Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     
+    <!-- Global polyfill -->
+    <script>
+      if (typeof global === 'undefined') {
+        window.global = window;
+      }
+    </script>
+    
     <!-- Service Worker Registration -->
+    <!-- 一時的に無効化
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -53,6 +61,7 @@
         });
       }
     </script>
+    -->
   </head>
   <body>
     <div id="root"></div>
