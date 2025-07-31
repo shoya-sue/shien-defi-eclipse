@@ -38,7 +38,7 @@ class TransactionService {
     } catch (error) {
       console.error('Transaction history fetch error:', error);
       // 本番環境では適切なエラーハンドリングを実装し、モックデータの返却は避ける
-      if (process.env.NODE_ENV === 'development') {
+      if (import.meta.env.DEV) {
         return this.getMockTransactions(userAddress);
       }
       throw new Error('取引履歴の取得に失敗しました。ネットワーク接続を確認してください。');
