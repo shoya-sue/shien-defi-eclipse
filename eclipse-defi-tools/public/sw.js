@@ -1,10 +1,10 @@
+// Service Worker for Eclipse DeFi Tools
 const CACHE_NAME = 'eclipse-defi-v1';
 const STATIC_CACHE_NAME = 'eclipse-defi-static-v1';
-const DYNAMIC_CACHE_NAME = 'eclipse-defi-dynamic-v1';
 const API_CACHE_NAME = 'eclipse-defi-api-v1';
 
-// キャッシュするファイル
-const STATIC_FILES = [
+// キャッシュするファイルのリスト
+const urlsToCache = [
   '/',
   '/index.html',
   '/manifest.json',
@@ -12,58 +12,46 @@ const STATIC_FILES = [
   '/icons/icon-512x512.png',
 ];
 
-// API キャッシュ設定
-const API_CACHE_URLS = [
-  'https://api.coingecko.com/api/v3/simple/price',
-  'https://quote-api.eclipse.jup.ag',
-  'https://api.orca.eclipse.so',
-  'https://api.raydium.eclipse.io',
+// API エンドポイントのパターン
+const API_PATTERNS = [
+  /api\.coingecko\.com/,
+  /api\.eclipse/,
+  /jupiter-api/,
+  /orca-api/,
 ];
 
-// キャッシュ時間設定 (秒)
+// キャッシュの有効期限（秒）
 const CACHE_DURATION = {
-  static: 7 * 24 * 60 * 60, // 7日
-  api: 30, // 30秒
-  dynamic: 24 * 60 * 60, // 1日
+  static: 86400, // 24時間
+  api: 300, // 5分
 };
 
-// Service Worker インストール
+// Service Worker のインストール
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installing...');
-  
   event.waitUntil(
     caches.open(STATIC_CACHE_NAME)
       .then((cache) => {
-        console.log('Caching static files');
-        return cache.addAll(STATIC_FILES);
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
       })
-      .then(() => {
-        console.log('Static files cached');
-        return self.skipWaiting();
-      })
+      .then(() => self.skipWaiting())
   );
 });
 
-// Service Worker アクティベーション
+// Service Worker のアクティベート
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activating...');
+  const cacheWhitelist = [CACHE_NAME, STATIC_CACHE_NAME, API_CACHE_NAME];
   
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== STATIC_CACHE_NAME && 
-              cacheName !== DYNAMIC_CACHE_NAME && 
-              cacheName !== API_CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
             return caches.delete(cacheName);
           }
         })
       );
-    }).then(() => {
-      console.log('Service Worker activated');
-      return self.clients.claim();
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
@@ -71,22 +59,28 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
-  
-  // 静的ファイルの処理
-  if (STATIC_FILES.includes(url.pathname) || url.pathname.startsWith('/assets/')) {
-    event.respondWith(handleStaticRequest(request));
+
+  // 同一オリジンのリクエストのみ処理
+  if (url.origin !== location.origin) {
+    return;
   }
-  // API リクエストの処理
-  else if (isAPIRequest(url)) {
+
+  // APIリクエストの判定
+  const isAPI = API_PATTERNS.some(pattern => pattern.test(url.href));
+
+  if (isAPI) {
     event.respondWith(handleAPIRequest(request));
-  }
-  // 動的コンテンツの処理
-  else {
+  } else if (request.destination === 'document' || 
+             request.destination === 'script' || 
+             request.destination === 'style' || 
+             request.destination === 'image') {
+    event.respondWith(handleStaticRequest(request));
+  } else {
     event.respondWith(handleDynamicRequest(request));
   }
 });
 
-// 静的ファイルの処理
+// 静的リソースの処理
 async function handleStaticRequest(request) {
   const cache = await caches.open(STATIC_CACHE_NAME);
   const cachedResponse = await cache.match(request);
@@ -105,9 +99,18 @@ async function handleStaticRequest(request) {
   try {
     const response = await fetch(request);
     if (response.ok) {
-      const responseToCache = response.clone();
-      responseToCache.headers.set('sw-cache-time', Date.now().toString());
-      cache.put(request, responseToCache);
+      // 新しいResponseオブジェクトを作成してヘッダーを追加
+      const headers = new Headers(response.headers);
+      headers.set('sw-cache-time', Date.now().toString());
+      
+      const responseToCache = new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: headers
+      });
+      
+      cache.put(request, responseToCache.clone());
+      return response;
     }
     return response;
   } catch (error) {
@@ -135,37 +138,52 @@ async function handleAPIRequest(request) {
   try {
     const response = await fetch(request);
     if (response.ok) {
-      const responseToCache = response.clone();
-      responseToCache.headers.set('sw-cache-time', Date.now().toString());
-      cache.put(request, responseToCache);
+      // 新しいResponseオブジェクトを作成してヘッダーを追加
+      const headers = new Headers(response.headers);
+      headers.set('sw-cache-time', Date.now().toString());
+      
+      const responseToCache = new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: headers
+      });
+      
+      cache.put(request, responseToCache.clone());
+      return response;
     }
     return response;
   } catch (error) {
     console.error('API fetch failed:', error);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    return new Response(JSON.stringify({ error: 'API unavailable offline' }), {
+    return cachedResponse || new Response(JSON.stringify({ error: 'Offline' }), {
       status: 503,
       headers: { 'Content-Type': 'application/json' }
     });
   }
 }
 
-// 動的コンテンツの処理
+// 動的リソースの処理
 async function handleDynamicRequest(request) {
-  const cache = await caches.open(DYNAMIC_CACHE_NAME);
-  
   try {
     const response = await fetch(request);
     if (response.ok) {
-      const responseToCache = response.clone();
-      responseToCache.headers.set('sw-cache-time', Date.now().toString());
-      cache.put(request, responseToCache);
+      // 新しいResponseオブジェクトを作成してヘッダーを追加
+      const headers = new Headers(response.headers);
+      headers.set('sw-cache-time', Date.now().toString());
+      
+      const responseToCache = new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: headers
+      });
+      
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, responseToCache.clone());
+      return response;
     }
     return response;
   } catch (error) {
     console.error('Dynamic fetch failed:', error);
+    const cache = await caches.open(CACHE_NAME);
     const cachedResponse = await cache.match(request);
     if (cachedResponse) {
       return cachedResponse;
@@ -187,136 +205,64 @@ async function handleDynamicRequest(request) {
             background: #1f2937;
             color: #f9fafb;
           }
-          .container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: #374151;
-            border-radius: 8px;
-          }
-          .icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-          }
-          .title {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: #3b82f6;
-          }
-          .message {
-            margin-bottom: 2rem;
-            color: #d1d5db;
-          }
-          .button {
+          h1 { color: #3b82f6; }
+          p { margin: 1rem 0; }
+          button {
             background: #3b82f6;
             color: white;
-            padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 6px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
             cursor: pointer;
             font-size: 1rem;
           }
-          .button:hover {
-            background: #2563eb;
-          }
+          button:hover { background: #2563eb; }
         </style>
       </head>
       <body>
-        <div class="container">
-          <div class="icon">🔌</div>
-          <h1 class="title">オフライン</h1>
-          <p class="message">
-            インターネット接続が必要です。<br>
-            接続を確認してから再試行してください。
-          </p>
-          <button class="button" onclick="window.location.reload()">
-            再試行
-          </button>
-        </div>
+        <h1>オフライン</h1>
+        <p>インターネット接続がありません。</p>
+        <p>接続が回復したら、ページを再読み込みしてください。</p>
+        <button onclick="window.location.reload()">再読み込み</button>
       </body>
       </html>
     `, {
-      headers: { 'Content-Type': 'text/html' }
+      status: 200,
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
     });
   }
 }
 
-// API リクエストかどうかの判定
-function isAPIRequest(url) {
-  return API_CACHE_URLS.some(apiUrl => url.href.startsWith(apiUrl));
-}
-
-// プッシュ通知の処理
-self.addEventListener('push', (event) => {
-  if (event.data) {
-    const data = event.data.json();
-    const options = {
-      body: data.body || 'Eclipse DeFi Tools からの通知',
-      icon: '/icons/icon-192x192.png',
-      badge: '/icons/icon-72x72.png',
-      tag: data.tag || 'eclipse-defi-notification',
-      data: data.data || {},
-      actions: data.actions || [],
-      requireInteraction: data.requireInteraction || false,
-    };
-    
-    event.waitUntil(
-      self.registration.showNotification(data.title || 'Eclipse DeFi Tools', options)
-    );
+// バックグラウンド同期
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-transactions') {
+    event.waitUntil(syncTransactions());
   }
 });
 
-// 通知クリックの処理
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  
-  const urlToOpen = event.notification.data.url || '/';
-  
+async function syncTransactions() {
+  // トランザクションの同期処理
+  console.log('Syncing transactions...');
+}
+
+// プッシュ通知
+self.addEventListener('push', (event) => {
+  const options = {
+    body: event.data ? event.data.text() : 'Eclipse DeFi Tools からの通知',
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/icon-192x192.png',
+    vibrate: [200, 100, 200],
+  };
+
   event.waitUntil(
-    clients.matchAll({ type: 'window' }).then((clientList) => {
-      for (const client of clientList) {
-        if (client.url === urlToOpen && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
-      }
-    })
+    self.registration.showNotification('Eclipse DeFi Tools', options)
   );
 });
 
-// バックグラウンド同期
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'background-sync') {
-    event.waitUntil(doBackgroundSync());
-  }
+// 通知クリック
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.openWindow('/')
+  );
 });
-
-async function doBackgroundSync() {
-  try {
-    // バックグラウンドでのデータ同期処理
-    console.log('Background sync started');
-    
-    // 価格データの更新
-    const priceCache = await caches.open(API_CACHE_NAME);
-    const cachedPrices = await priceCache.keys();
-    
-    for (const request of cachedPrices) {
-      try {
-        const response = await fetch(request);
-        if (response.ok) {
-          const responseToCache = response.clone();
-          responseToCache.headers.set('sw-cache-time', Date.now().toString());
-          priceCache.put(request, responseToCache);
-        }
-      } catch (error) {
-        console.error('Background sync failed for:', request.url, error);
-      }
-    }
-    
-    console.log('Background sync completed');
-  } catch (error) {
-    console.error('Background sync error:', error);
-  }
-}

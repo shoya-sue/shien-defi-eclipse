@@ -66,8 +66,8 @@ export const COMMON_TOKENS: Token[] = [
 ];
 
 export const RPC_ENDPOINTS = {
-  mainnet: validateEnvVar(process.env.REACT_APP_ECLIPSE_RPC_URL, 'https://mainnetbeta-rpc.eclipse.xyz', 'REACT_APP_ECLIPSE_RPC_URL'),
-  websocket: validateEnvVar(process.env.REACT_APP_ECLIPSE_WS_URL, 'wss://mainnetbeta-rpc.eclipse.xyz', 'REACT_APP_ECLIPSE_WS_URL'),
+  mainnet: validateEnvVar(process.env.REACT_APP_ECLIPSE_RPC_URL, 'https://eclipse.helius-rpc.com', 'REACT_APP_ECLIPSE_RPC_URL'),
+  websocket: validateEnvVar(process.env.REACT_APP_ECLIPSE_WS_URL, 'wss://eclipse.helius-rpc.com', 'REACT_APP_ECLIPSE_WS_URL'),
 };
 
 export const API_ENDPOINTS = {
