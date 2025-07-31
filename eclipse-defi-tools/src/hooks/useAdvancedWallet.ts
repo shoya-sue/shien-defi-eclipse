@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { 
   advancedWalletService, 
@@ -47,33 +47,9 @@ export const useAdvancedWallet = (): UseAdvancedWalletResult => {
   const [transactionLoading, setTransactionLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 接続状態の監視
-  useEffect(() => {
-    const updateConnectionState = () => {
-      const state = advancedWalletService.getConnectionState();
-      setConnectionState(state);
-      setError(state.lastError);
-    };
-
-    // 初期状態を設定
-    updateConnectionState();
-
-    // 定期的に状態を更新（WebSocketやイベントリスナーがない場合の代替）
-    const interval = setInterval(updateConnectionState, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // ウォレット接続状態の変化を監視
-  useEffect(() => {
-    if (connected && wallet && !connectionState.isConnected) {
-      // ウォレットが接続されたが、アドバンスサービスにまだ接続されていない
-      connect().catch(console.error);
-    } else if (!connected && connectionState.isConnected) {
-      // ウォレットが切断されたが、アドバンスサービスはまだ接続状態
-      disconnect().catch(console.error);
-    }
-  }, [connected, wallet, connectionState.isConnected]);
+  // 関数参照を保持するためのref
+  const connectRef = useRef<(() => Promise<void>) | null>(null);
+  const disconnectRef = useRef<(() => Promise<void>) | null>(null);
 
   // ウォレット接続
   const connect = useCallback(async (): Promise<void> => {
@@ -100,6 +76,40 @@ export const useAdvancedWallet = (): UseAdvancedWalletResult => {
       console.error('Disconnect error:', getErrorMessage(error));
     }
   }, [baseDisconnect]);
+
+  // 関数参照を更新
+  useEffect(() => {
+    connectRef.current = connect;
+    disconnectRef.current = disconnect;
+  }, [connect, disconnect]);
+
+  // 接続状態の監視
+  useEffect(() => {
+    const updateConnectionState = () => {
+      const state = advancedWalletService.getConnectionState();
+      setConnectionState(state);
+      setError(state.lastError);
+    };
+
+    // 初期状態を設定
+    updateConnectionState();
+
+    // 定期的に状態を更新（WebSocketやイベントリスナーがない場合の代替）
+    const interval = setInterval(updateConnectionState, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // ウォレット接続状態の変化を監視
+  useEffect(() => {
+    if (connected && wallet && !connectionState.isConnected) {
+      // ウォレットが接続されたが、アドバンスサービスにまだ接続されていない
+      connectRef.current?.().catch(console.error);
+    } else if (!connected && connectionState.isConnected) {
+      // ウォレットが切断されたが、アドバンスサービスはまだ接続状態
+      disconnectRef.current?.().catch(console.error);
+    }
+  }, [connected, wallet, connectionState.isConnected]);
 
   // 残高更新
   const refreshBalance = useCallback(async (): Promise<void> => {
