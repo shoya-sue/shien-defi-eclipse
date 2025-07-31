@@ -350,8 +350,8 @@ class EclipseRpcService {
 
 // デフォルトのEclipse RPC設定
 const defaultConfig: EclipseRpcConfig = {
-  endpoint: process.env.REACT_APP_ECLIPSE_RPC_URL || 'https://mainnetbeta-rpc.eclipse.xyz',
-  wsEndpoint: process.env.REACT_APP_ECLIPSE_WS_URL || 'wss://mainnetbeta-rpc.eclipse.xyz',
+  endpoint: import.meta.env.VITE_ECLIPSE_RPC_URL || 'https://mainnetbeta-rpc.eclipse.xyz',
+  wsEndpoint: import.meta.env.VITE_ECLIPSE_WS_URL || 'wss://mainnetbeta-rpc.eclipse.xyz',
   commitment: 'confirmed',
   timeout: 30000,
   retryAttempts: 3,

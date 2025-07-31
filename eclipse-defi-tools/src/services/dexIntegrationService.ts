@@ -377,7 +377,7 @@ class DEXIntegrationService {
   ): Promise<{ balance: number; exists: boolean }> {
     try {
       // Eclipse RPC call to get token account info
-      const rpcUrl = process.env.REACT_APP_ECLIPSE_RPC_URL || 'https://eclipse-mainnet.rpcpool.com';
+      const rpcUrl = import.meta.env.VITE_ECLIPSE_RPC_URL || 'https://eclipse-mainnet.rpcpool.com';
       if (!rpcUrl) {
         throw new Error('Eclipse RPC URL not configured');
       }

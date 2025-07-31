@@ -70,7 +70,7 @@ class JupiterApiService {
   private retryDelay: number;
 
   constructor() {
-    this.baseUrl = process.env.REACT_APP_JUPITER_API_URL || 'https://quote-api.jup.ag/v6';
+    this.baseUrl = import.meta.env.VITE_JUPITER_API_URL || 'https://quote-api.jup.ag/v6';
     this.timeout = 10000; // 10秒
     this.retryAttempts = 3;
     this.retryDelay = 1000; // 1秒

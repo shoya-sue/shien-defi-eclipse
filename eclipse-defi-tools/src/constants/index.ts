@@ -15,7 +15,7 @@ export const DEX_CONFIGS: Record<string, DEXConfig> = {
   jupiter: {
     name: 'Jupiter',
     // 注意: 実際のJupiter Eclipse APIが利用可能になるまではモック実装を使用
-    apiUrl: validateEnvVar(process.env.REACT_APP_JUPITER_API_URL, 'https://mock-api.eclipse-defi-tools.local/jupiter', 'REACT_APP_JUPITER_API_URL'),
+    apiUrl: validateEnvVar(import.meta.env.VITE_JUPITER_API_URL, 'https://mock-api.eclipse-defi-tools.local/jupiter', 'VITE_JUPITER_API_URL'),
     programId: 'JUP4Fb2cqiRUcaTHdrPC8h2gNsA2ETXiPDD33WcGuJB',
     fee: 0.001,
     enabled: true,
@@ -23,7 +23,7 @@ export const DEX_CONFIGS: Record<string, DEXConfig> = {
   orca: {
     name: 'Orca',
     // 注意: 実際のOrca Eclipse APIが利用可能になるまではモック実装を使用
-    apiUrl: validateEnvVar(process.env.REACT_APP_ORCA_API_URL, 'https://mock-api.eclipse-defi-tools.local/orca', 'REACT_APP_ORCA_API_URL'),
+    apiUrl: validateEnvVar(import.meta.env.VITE_ORCA_API_URL, 'https://mock-api.eclipse-defi-tools.local/orca', 'VITE_ORCA_API_URL'),
     programId: 'whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc',
     fee: 0.003,
     enabled: false, // 実際のAPIが利用可能になるまで無効
@@ -31,7 +31,7 @@ export const DEX_CONFIGS: Record<string, DEXConfig> = {
   raydium: {
     name: 'Raydium',
     // 注意: 実際のRaydium Eclipse APIが利用可能になるまではモック実装を使用
-    apiUrl: validateEnvVar(process.env.REACT_APP_RAYDIUM_API_URL, 'https://mock-api.eclipse-defi-tools.local/raydium', 'REACT_APP_RAYDIUM_API_URL'),
+    apiUrl: validateEnvVar(import.meta.env.VITE_RAYDIUM_API_URL, 'https://mock-api.eclipse-defi-tools.local/raydium', 'VITE_RAYDIUM_API_URL'),
     programId: '675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8',
     fee: 0.0025,
     enabled: false, // 実際のAPIが利用可能になるまで無効
@@ -66,13 +66,13 @@ export const COMMON_TOKENS: Token[] = [
 ];
 
 export const RPC_ENDPOINTS = {
-  mainnet: validateEnvVar(process.env.REACT_APP_ECLIPSE_RPC_URL, 'https://eclipse.helius-rpc.com', 'REACT_APP_ECLIPSE_RPC_URL'),
-  websocket: validateEnvVar(process.env.REACT_APP_ECLIPSE_WS_URL, 'wss://eclipse.helius-rpc.com', 'REACT_APP_ECLIPSE_WS_URL'),
+  mainnet: validateEnvVar(import.meta.env.VITE_ECLIPSE_RPC_URL, 'https://eclipse.helius-rpc.com', 'VITE_ECLIPSE_RPC_URL'),
+  websocket: validateEnvVar(import.meta.env.VITE_ECLIPSE_WS_URL, 'wss://eclipse.helius-rpc.com', 'VITE_ECLIPSE_WS_URL'),
 };
 
 export const API_ENDPOINTS = {
   coingecko: 'https://api.coingecko.com/api/v3',
-  priceUpdate: parseInt(process.env.REACT_APP_PRICE_UPDATE_INTERVAL || '5000'),
+  priceUpdate: parseInt(import.meta.env.VITE_PRICE_UPDATE_INTERVAL || '5000'),
 };
 
 export const DEFAULT_SETTINGS = {

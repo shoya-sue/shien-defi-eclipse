@@ -81,7 +81,7 @@ class OrcaApiService {
   private retryDelay: number;
 
   constructor() {
-    this.baseUrl = process.env.REACT_APP_ORCA_API_URL || 'https://api.orca.so/v1';
+    this.baseUrl = import.meta.env.VITE_ORCA_API_URL || 'https://api.orca.so/v1';
     this.timeout = 10000; // 10秒
     this.retryAttempts = 3;
     this.retryDelay = 1000; // 1秒
