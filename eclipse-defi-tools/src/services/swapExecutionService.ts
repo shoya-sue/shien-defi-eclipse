@@ -48,7 +48,7 @@ class SwapExecutionService {
   ): Promise<SwapConfirmation> {
     try {
       // ガス手数料を推定
-      let estimatedGasFee = quote.estimatedGas;
+      const estimatedGasFee = quote.estimatedGas;
       
       // 最小受取量を計算（スリッページ考慮）
       const slippageBps = options.slippageBps || 50; // デフォルト 0.5%

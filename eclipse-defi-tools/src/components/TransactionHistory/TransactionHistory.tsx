@@ -305,7 +305,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletAd
           {/* 時間範囲フィルター */}
           <select
             value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value as any)}
+            onChange={(e) => setTimeRange(e.target.value as 'all' | 'today' | 'week' | 'month')}
             className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-sm"
           >
             <option value="all">全期間</option>
@@ -317,7 +317,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletAd
           {/* タイプフィルター */}
           <select
             value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value as any)}
+            onChange={(e) => setTypeFilter(e.target.value as TransactionType | 'ALL')}
             className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-sm"
           >
             <option value="ALL">全タイプ</option>

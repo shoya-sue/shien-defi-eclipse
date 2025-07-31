@@ -63,7 +63,7 @@ export interface IndicatorData {
     timestamp: number;
     value: number | { upper?: number; middle?: number; lower?: number; signal?: number };
   }>;
-  settings: Record<string, any>;
+  settings: Record<string, number | string | boolean>;
 }
 
 // テクニカル分析結果
@@ -277,53 +277,63 @@ class ChartAnalysisService {
   public calculateIndicator(
     chartData: ChartData,
     type: IndicatorType,
-    settings: Record<string, any> = {}
+    settings: Record<string, number | string | boolean> = {}
   ): IndicatorData {
     const prices = chartData.data.map(d => d.close);
     const timestamps = chartData.data.map(d => d.timestamp);
-    let values: any[] = [];
+    let values: Array<{
+      timestamp: number;
+      value: number | { upper?: number; middle?: number; lower?: number; signal?: number };
+    }> = [];
     
     switch (type) {
-      case IndicatorType.SMA:
-        const period = settings.period || 20;
+      case IndicatorType.SMA: {
+        const period = typeof settings.period === 'number' ? settings.period : 20;
         values = this.calculateSMA(prices, period).map((v, i) => ({
           timestamp: timestamps[i + period - 1],
           value: v,
         }));
         break;
+      }
         
-      case IndicatorType.EMA:
-        const emaPeriod = settings.period || 20;
+      case IndicatorType.EMA: {
+        const emaPeriod = typeof settings.period === 'number' ? settings.period : 20;
         values = this.calculateEMA(prices, emaPeriod).map((v, i) => ({
           timestamp: timestamps[i],
           value: v,
         }));
         break;
+      }
         
-      case IndicatorType.RSI:
-        const rsiPeriod = settings.period || 14;
+      case IndicatorType.RSI: {
+        const rsiPeriod = typeof settings.period === 'number' ? settings.period : 14;
         values = this.calculateRSIArray(prices, rsiPeriod).map((v, i) => ({
           timestamp: timestamps[i],
           value: v,
         }));
         break;
+      }
         
-      case IndicatorType.BOLLINGER_BANDS:
-        const bbPeriod = settings.period || 20;
-        const stdDev = settings.stdDev || 2;
+      case IndicatorType.BOLLINGER_BANDS: {
+        const bbPeriod = typeof settings.period === 'number' ? settings.period : 20;
+        const stdDev = typeof settings.stdDev === 'number' ? settings.stdDev : 2;
         values = this.calculateBollingerBands(prices, bbPeriod, stdDev).map((v, i) => ({
           timestamp: timestamps[i + bbPeriod - 1],
           value: v,
         }));
         break;
+      }
         
-      case IndicatorType.MACD:
-        const { fast = 12, slow = 26, signal = 9 } = settings;
+      case IndicatorType.MACD: {
+        const fast = typeof settings.fast === 'number' ? settings.fast : 12;
+        const slow = typeof settings.slow === 'number' ? settings.slow : 26;
+        const signal = typeof settings.signal === 'number' ? settings.signal : 9;
         values = this.calculateMACD(prices, fast, slow, signal).map((v, i) => ({
           timestamp: timestamps[i + slow - 1],
           value: v,
         }));
         break;
+      }
     }
     
     return {
@@ -498,8 +508,8 @@ class ChartAnalysisService {
     
     // 頻度の高い価格帯を抽出
     const significantZones = Array.from(priceZones.entries())
-      .filter(([_, count]) => count >= 2)
-      .map(([zone, _]) => zone * zoneSize);
+      .filter(([, count]) => count >= 2)
+      .map(([zone]) => zone * zoneSize);
     
     const currentPrice = data[data.length - 1].close;
     

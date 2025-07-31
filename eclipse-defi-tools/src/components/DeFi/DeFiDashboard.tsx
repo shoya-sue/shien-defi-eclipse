@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { defiProtocolService } from '../../services/defiProtocolService';
+import { defiProtocolService, ProtocolType } from '../../services/defiProtocolService';
 import type {
   ProtocolInfo,
   StakingInfo,
@@ -8,6 +8,17 @@ import type {
   ArbitrageOpportunity,
 } from '../../services/defiProtocolService';
 import { COMMON_TOKENS } from '../../constants';
+
+interface OptimalStrategy {
+  strategies: Array<{
+    type: 'staking' | 'lending' | 'farming';
+    protocol: ProtocolType;
+    details: StakingInfo | LendingInfo | FarmingOpportunity;
+    allocation: number;
+    expectedApy: number;
+  }>;
+  totalExpectedApy: number;
+}
 
 type ViewMode = 'overview' | 'staking' | 'lending' | 'farming' | 'arbitrage' | 'strategy';
 
@@ -24,7 +35,7 @@ export const DeFiDashboard: React.FC = () => {
   // 戦略設定
   const [strategyAmount, setStrategyAmount] = useState<string>('1000');
   const [riskTolerance, setRiskTolerance] = useState<'low' | 'medium' | 'high'>('medium');
-  const [optimalStrategy, setOptimalStrategy] = useState<any>(null);
+  const [optimalStrategy, setOptimalStrategy] = useState<OptimalStrategy | null>(null);
 
   // データ取得
   const fetchData = async () => {
@@ -81,7 +92,7 @@ export const DeFiDashboard: React.FC = () => {
     if (viewMode === 'strategy' && strategyAmount) {
       calculateOptimalStrategy();
     }
-  }, [viewMode, strategyAmount, riskTolerance]);
+  }, [viewMode, strategyAmount, riskTolerance, calculateOptimalStrategy]);
 
   // プロトコル概要の表示
   const renderProtocolOverview = () => (
@@ -451,7 +462,7 @@ export const DeFiDashboard: React.FC = () => {
             </label>
             <select
               value={riskTolerance}
-              onChange={(e) => setRiskTolerance(e.target.value as any)}
+              onChange={(e) => setRiskTolerance(e.target.value as 'low' | 'medium' | 'high')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
             >
               <option value="low">低リスク</option>
@@ -477,7 +488,7 @@ export const DeFiDashboard: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            {optimalStrategy.strategies.map((strategy: any, index: number) => (
+            {optimalStrategy.strategies.map((strategy, index) => (
               <div
                 key={index}
                 className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"

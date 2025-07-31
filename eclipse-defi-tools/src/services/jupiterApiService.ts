@@ -21,7 +21,7 @@ export interface JupiterRoute {
   swapMode: 'ExactIn' | 'ExactOut';
   priceImpactPct: number;
   marketInfos: JupiterMarketInfo[];
-  instructions?: any[];
+  instructions?: unknown[];
 }
 
 export interface JupiterMarketInfo {

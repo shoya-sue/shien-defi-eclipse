@@ -367,8 +367,7 @@ class AutoTradingBotService {
 
   // リスク管理チェック
   private checkRiskLimits(
-    botId: string,
-    _trade: Omit<BotExecutionLog, 'botId' | 'timestamp' | 'txHash' | 'status'>
+    botId: string
   ): boolean {
     const bot = this.bots.get(botId);
     if (!bot) return false;
@@ -506,9 +505,7 @@ class AutoTradingBotService {
   }
 
   // モック取引実行
-  private async mockExecuteTrade(
-    _trade: Omit<BotExecutionLog, 'botId' | 'timestamp' | 'txHash' | 'status'>
-  ): Promise<string> {
+  private async mockExecuteTrade(): Promise<string> {
     // 実際の実装では swapExecutionService を使用
     return `0x${Math.random().toString(16).substring(2, 66)}`;
   }

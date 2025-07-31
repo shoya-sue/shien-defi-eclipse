@@ -29,7 +29,7 @@ export interface UseTransactionHistoryReturn {
     signature: string,
     type: TransactionType,
     from: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ) => Promise<TransactionHistoryEntry>;
   refresh: () => void;
   clearHistory: (olderThan?: Date) => void;
@@ -92,7 +92,7 @@ export const useTransactionHistory = (
       signature: string,
       type: TransactionType,
       from: string,
-      metadata?: Record<string, any>
+      metadata?: Record<string, unknown>
     ): Promise<TransactionHistoryEntry> => {
       try {
         const entry = await transactionHistoryService.addTransaction(

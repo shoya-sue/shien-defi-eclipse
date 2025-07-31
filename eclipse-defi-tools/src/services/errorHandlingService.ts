@@ -31,7 +31,7 @@ export interface ErrorInfo {
   severity: ErrorSeverity;
   message: string;
   originalError: Error;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   timestamp: number;
   resolved: boolean;
   retryCount: number;
@@ -67,7 +67,7 @@ class ErrorHandlingService {
     error: Error,
     type: ErrorType,
     severity: ErrorSeverity = ErrorSeverity.MEDIUM,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
     retryConfig?: RetryConfig
   ): Promise<ErrorInfo> {
     const errorId = this.generateErrorId();
@@ -114,7 +114,7 @@ class ErrorHandlingService {
     fn: () => Promise<T>,
     retryConfig: RetryConfig,
     errorType: ErrorType = ErrorType.SYSTEM,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): Promise<T> {
     let lastError: Error;
 
@@ -154,7 +154,7 @@ class ErrorHandlingService {
   public async handleNetworkError(
     error: Error,
     operation: string,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): Promise<ErrorInfo> {
     const retryConfig: RetryConfig = {
       maxRetries: 3,
@@ -177,7 +177,7 @@ class ErrorHandlingService {
   public async handleRpcError(
     error: Error,
     method: string,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): Promise<ErrorInfo> {
     const retryConfig: RetryConfig = {
       maxRetries: 2,
@@ -200,7 +200,7 @@ class ErrorHandlingService {
   public async handleWalletError(
     error: Error,
     action: string,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): Promise<ErrorInfo> {
     // ウォレットエラーは通常再試行しない
     return this.handleError(
@@ -215,7 +215,7 @@ class ErrorHandlingService {
   public async handleApiError(
     error: Error,
     endpoint: string,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ): Promise<ErrorInfo> {
     const retryConfig: RetryConfig = {
       maxRetries: 2,
@@ -238,7 +238,7 @@ class ErrorHandlingService {
   public handleValidationError(
     message: string,
     field?: string,
-    value?: any
+    value?: unknown
   ): ErrorInfo {
     const error = new Error(message);
     const errorInfo: ErrorInfo = {

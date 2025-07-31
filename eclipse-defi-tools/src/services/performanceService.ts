@@ -7,7 +7,7 @@ interface PerformanceMetric {
   startTime: number;
   endTime: number;
   duration: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // リクエストバッチング用の設定
@@ -46,11 +46,11 @@ class PerformanceService {
   };
   
   // バッチングキュー
-  private batchQueues: Map<string, BatchQueueItem<any>[]> = new Map();
+  private batchQueues: Map<string, BatchQueueItem<unknown>[]> = new Map();
   private batchTimers: Map<string, NodeJS.Timeout> = new Map();
 
   // パフォーマンス測定開始
-  public startMeasurement(name: string, metadata?: Record<string, any>): void {
+  public startMeasurement(name: string, metadata?: Record<string, unknown>): void {
     const startTime = performance.now();
     this.activeTimers.set(name, startTime);
     
@@ -60,7 +60,7 @@ class PerformanceService {
   }
 
   // パフォーマンス測定終了
-  public endMeasurement(name: string, metadata?: Record<string, any>): PerformanceMetric | null {
+  public endMeasurement(name: string, metadata?: Record<string, unknown>): PerformanceMetric | null {
     const endTime = performance.now();
     const startTime = this.activeTimers.get(name);
     
@@ -97,7 +97,7 @@ class PerformanceService {
   public async measureAsync<T>(
     name: string,
     fn: () => Promise<T>,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<T> {
     this.startMeasurement(name, metadata);
     
@@ -116,7 +116,7 @@ class PerformanceService {
   public measureSync<T>(
     name: string,
     fn: () => T,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): T {
     this.startMeasurement(name, metadata);
     
@@ -149,7 +149,7 @@ class PerformanceService {
       // キューに追加
       queue.push({
         key: requestKey,
-        resolve,
+        resolve: resolve as (value: unknown) => void,
         reject,
         timestamp: Date.now(),
       });
@@ -216,7 +216,7 @@ class PerformanceService {
   }
 
   // デバウンスされた関数の作成
-  public createDebouncedFunction<T extends (...args: any[]) => void>(
+  public createDebouncedFunction<T extends (...args: unknown[]) => void>(
     fn: T,
     delay: number
   ): T {
@@ -224,7 +224,7 @@ class PerformanceService {
   }
 
   // スロットルされた関数の作成
-  public createThrottledFunction<T extends (...args: any[]) => void>(
+  public createThrottledFunction<T extends (...args: unknown[]) => void>(
     fn: T,
     limit: number
   ): T {
@@ -326,7 +326,7 @@ class PerformanceService {
     name: string,
     startTime: number,
     duration: number,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): void {
     const metric: PerformanceMetric = {
       name,
@@ -381,9 +381,17 @@ class PerformanceService {
   }
 
   // メモリ使用量の監視
-  public getMemoryInfo(): any {
+  public getMemoryInfo(): {
+    usedJSHeapSize: number;
+    totalJSHeapSize: number;
+    jsHeapSizeLimit: number;
+  } | null {
     if ('memory' in performance) {
-      return (performance as any).memory;
+      return (performance as { memory: {
+        usedJSHeapSize: number;
+        totalJSHeapSize: number;
+        jsHeapSizeLimit: number;
+      } }).memory;
     }
     return null;
   }

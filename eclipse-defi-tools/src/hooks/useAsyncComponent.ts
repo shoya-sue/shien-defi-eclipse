@@ -48,7 +48,7 @@ export function useAsyncComponent<T>(
     return () => {
       isMounted = false;
     };
-  }, [importFunction, ...deps]);
+  }, [importFunction, deps]);
 
   return state;
 }

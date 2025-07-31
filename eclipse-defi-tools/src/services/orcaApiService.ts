@@ -332,7 +332,7 @@ class OrcaApiService {
             priceImpact: quote.priceImpact,
             outputAmount: parseFloat(quote.outputAmount),
           };
-        } catch (error) {
+        } catch {
           return {
             amount,
             priceImpact: 100, // 失敗時は最大価格影響

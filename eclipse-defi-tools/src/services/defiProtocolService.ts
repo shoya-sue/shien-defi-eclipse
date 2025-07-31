@@ -441,10 +441,7 @@ class DeFiProtocolService {
   }
 
   // プロトコル別価格の取得（モック）
-  private async getProtocolPrices(
-    _tokenA: Token,
-    _tokenB: Token
-  ): Promise<Array<{ protocol: ProtocolType; price: number; amountOut: number }>> {
+  private async getProtocolPrices(): Promise<Array<{ protocol: ProtocolType; price: number; amountOut: number }>> {
     // 実際にはAPIから価格を取得
     const basePrice = 1 + Math.random() * 0.1;
     
@@ -488,7 +485,13 @@ class DeFiProtocolService {
         this.getFarmingOpportunities(),
       ]);
 
-      const strategies: any[] = [];
+      const strategies: Array<{
+        type: 'staking' | 'lending' | 'farming';
+        protocol: ProtocolType;
+        details: StakingInfo | LendingInfo | FarmingOpportunity;
+        allocation: number;
+        expectedApy: number;
+      }> = [];
       let remainingAllocation = 100;
 
       // リスク許容度に基づいて配分

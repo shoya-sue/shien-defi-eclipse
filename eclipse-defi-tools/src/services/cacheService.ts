@@ -24,7 +24,7 @@ interface CacheStats {
 }
 
 class CacheService {
-  private cache: Map<string, CacheEntry<any>> = new Map();
+  private cache: Map<string, CacheEntry<unknown>> = new Map();
   private stats = { hits: 0, misses: 0 };
   private config: Required<CacheConfig>;
 

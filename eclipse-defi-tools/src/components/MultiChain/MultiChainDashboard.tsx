@@ -83,13 +83,13 @@ export const MultiChainDashboard: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     if (viewMode === 'bridge' && bridgeAmount) {
       fetchBridgeQuotes();
     }
-  }, [viewMode, selectedFromChain, selectedToChain, selectedToken, bridgeAmount]);
+  }, [viewMode, selectedFromChain, selectedToChain, selectedToken, bridgeAmount, fetchBridgeQuotes]);
 
   // チェーン概要の表示
   const renderChainOverview = () => (

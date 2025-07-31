@@ -41,7 +41,7 @@ export interface TransactionHistoryEntry {
   slot?: number;
   confirmations?: number;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // トランザクション統計
@@ -103,7 +103,7 @@ class TransactionHistoryService {
     signature: string,
     type: TransactionType,
     from: string,
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   ): Promise<TransactionHistoryEntry> {
     const id = this.generateTransactionId();
     
@@ -332,7 +332,7 @@ class TransactionHistoryService {
         case TransactionStatus.CONFIRMED:
           stats.successfulTransactions++;
           confirmedCount++;
-          if (entry.metadata?.confirmationTime) {
+          if (entry.metadata?.confirmationTime && typeof entry.metadata.confirmationTime === 'number') {
             totalConfirmationTime += entry.metadata.confirmationTime;
           }
           break;

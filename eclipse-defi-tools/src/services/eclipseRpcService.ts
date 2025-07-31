@@ -334,7 +334,7 @@ class EclipseRpcService {
   }
 
   // WebSocketイベントリスナー登録
-  public onWebSocketMessage(callback: (data: any) => void): void {
+  public onWebSocketMessage(callback: (data: unknown) => void): void {
     if (this.wsConnection) {
       this.wsConnection.onmessage = (event) => {
         try {

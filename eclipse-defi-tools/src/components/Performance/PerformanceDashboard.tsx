@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { performanceService } from '../../services/performanceService';
 import { cacheService, apiCache, priceCache, poolCache, userDataCache } from '../../services/cacheService';
+import type { CacheService as CacheServiceType } from '../../services/cacheService';
+
+interface CacheStats {
+  hits: number;
+  misses: number;
+  entries: number;
+  hitRate: number;
+  memoryUsage: string;
+}
 
 interface CacheInfo {
   name: string;
-  instance: any;
-  stats: any;
+  instance: CacheServiceType;
+  stats: CacheStats;
 }
 
 export const PerformanceDashboard: React.FC = () => {
@@ -39,7 +48,7 @@ export const PerformanceDashboard: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleClearCache = (cacheInstance: any) => {
+  const handleClearCache = (cacheInstance: CacheServiceType) => {
     cacheInstance.clear();
     // 統計を即座に更新
     const cacheInfos: CacheInfo[] = [

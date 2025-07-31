@@ -18,7 +18,7 @@ export interface HealthCheckResult {
   responseTime: number;
   error?: string;
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // サービス設定
@@ -330,7 +330,7 @@ export const commonHealthChecks = {
 
       clearTimeout(timeoutId);
       return response.ok;
-    } catch (error) {
+    } catch {
       return false;
     }
   },
@@ -355,7 +355,7 @@ export const commonHealthChecks = {
           clearTimeout(timeoutId);
           resolve(false);
         };
-      } catch (error) {
+      } catch {
         resolve(false);
       }
     });
@@ -381,7 +381,7 @@ export const commonHealthChecks = {
 
       const data = await response.json();
       return !data.error;
-    } catch (error) {
+    } catch {
       return false;
     }
   },
