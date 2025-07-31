@@ -73,7 +73,7 @@ export const useAdvancedWallet = (): UseAdvancedWalletResult => {
       // ウォレットが切断されたが、アドバンスサービスはまだ接続状態
       disconnect().catch(console.error);
     }
-  }, [connected, wallet, connectionState.isConnected, connect, disconnect]);
+  }, [connected, wallet, connectionState.isConnected]);
 
   // ウォレット接続
   const connect = useCallback(async (): Promise<void> => {

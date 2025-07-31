@@ -320,7 +320,7 @@ class AutoTradingBotService {
     if (!bot) return;
 
     // リスク管理チェック
-    if (!this.checkRiskLimits(botId, trade)) {
+    if (!this.checkRiskLimits(botId)) {
       this.addExecutionLog(botId, {
         ...trade,
         status: 'FAILED',
@@ -331,7 +331,7 @@ class AutoTradingBotService {
 
     try {
       // 実際の取引実行（モック）
-      const txHash = await this.mockExecuteTrade(trade);
+      const txHash = await this.mockExecuteTrade();
 
       // 実行ログに追加
       this.addExecutionLog(botId, {

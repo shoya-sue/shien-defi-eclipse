@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { performanceService } from '../../services/performanceService';
 import { cacheService, apiCache, priceCache, poolCache, userDataCache } from '../../services/cacheService';
-import type { CacheService as CacheServiceType } from '../../services/cacheService';
+type CacheServiceType = typeof cacheService;
 
 interface CacheStats {
   hits: number;

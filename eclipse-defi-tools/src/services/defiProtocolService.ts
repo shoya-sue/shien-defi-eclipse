@@ -394,7 +394,7 @@ class DeFiProtocolService {
           const tokenB = tokens[j];
 
           // 各プロトコルでの価格を取得（モック）
-          const prices = await this.getProtocolPrices(tokenA, tokenB);
+          const prices = await this.getProtocolPrices();
           
           if (prices.length < 2) continue;
 
