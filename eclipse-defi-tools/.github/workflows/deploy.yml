@@ -1,10 +1,9 @@
-name: Deploy to GitHub Pages
+name: Deploy to VPS
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-and-test:
@@ -13,34 +12,34 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+      
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
-    
+        
     - name: Install dependencies
       run: npm ci
-    
+      
     - name: Run type checking
       run: npm run typecheck
-    
+      
     - name: Run linting
       run: npm run lint
-    
+      
     - name: Run tests
       run: npm run test -- --run
-    
+      
     - name: Build application
       run: npm run build
       env:
-        REACT_APP_ECLIPSE_RPC_URL: ${{ secrets.ECLIPSE_RPC_URL || 'https://mainnetbeta-rpc.eclipse.xyz' }}
-        REACT_APP_ECLIPSE_WS_URL: ${{ secrets.ECLIPSE_WS_URL || 'wss://mainnetbeta-rpc.eclipse.xyz' }}
-        REACT_APP_JUPITER_API_URL: ${{ secrets.JUPITER_API_URL }}
-        REACT_APP_ORCA_API_URL: ${{ secrets.ORCA_API_URL }}
-        REACT_APP_RAYDIUM_API_URL: ${{ secrets.RAYDIUM_API_URL }}
-    
+        VITE_ECLIPSE_RPC_URL: ${{ secrets.ECLIPSE_RPC_URL || 'https://mainnetbeta-rpc.eclipse.xyz' }}
+        VITE_ECLIPSE_WS_URL: ${{ secrets.ECLIPSE_WS_URL || 'wss://mainnetbeta-rpc.eclipse.xyz' }}
+        VITE_JUPITER_API_URL: ${{ secrets.JUPITER_API_URL }}
+        VITE_ORCA_API_URL: ${{ secrets.ORCA_API_URL }}
+        VITE_RAYDIUM_API_URL: ${{ secrets.RAYDIUM_API_URL }}
+        
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -53,18 +52,22 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
         name: build-files
         path: dist/
-    
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+        
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@v1.0.3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist
-        cname: ${{ secrets.CUSTOM_DOMAIN }}
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT || '22' }}
+        script: |
+          cd /var/www/vhosts/eclipse-defi-tools.sho43.xyz
+          git pull origin main
+          npm ci
+          npm run build
+          sudo systemctl reload nginx
