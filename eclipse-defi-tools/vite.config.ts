@@ -1,20 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import inject from '@rollup/plugin-inject'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    inject({
-      Buffer: ['buffer', 'Buffer'],
-    })
   ],
   define: {
     global: 'globalThis',
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
   },
   build: {
+    target: 'es2020',
     rollupOptions: {
       output: {
         manualChunks: (id) => {
@@ -65,11 +62,12 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', '@solana/web3.js', 'borsh'],
+    include: ['react', 'react-dom', '@solana/web3.js', 'borsh', 'buffer'],
     esbuildOptions: {
       define: {
         global: 'globalThis'
-      }
+      },
+      plugins: []
     }
   },
   resolve: {
@@ -78,7 +76,8 @@ export default defineConfig({
       http: 'stream-http',
       https: 'https-browserify',
       zlib: 'browserify-zlib',
-      util: 'util'
+      util: 'util',
+      borsh: 'borsh/lib/index.js'
     }
   }
 })
