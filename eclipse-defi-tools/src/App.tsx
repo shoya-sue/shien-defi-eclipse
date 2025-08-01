@@ -92,14 +92,14 @@ function App() {
             
             {loading && (
               <div className="text-center py-8">
-                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
                 <p className="mt-2 text-gray-600 dark:text-gray-300">価格データを取得中...</p>
               </div>
             )}
 
             {error && (
               <div className="text-center py-8">
-                <p className="text-red-600 dark:text-red-400">エラー: {error}</p>
+                <p className="text-error-600 dark:text-error-400">エラー: {error}</p>
               </div>
             )}
 
@@ -132,8 +132,8 @@ function App() {
                       <span
                         className={`block ${
                           priceData.priceChange24h >= 0
-                            ? 'text-green-600 dark:text-green-400'
-                            : 'text-red-600 dark:text-red-400'
+                            ? 'text-success-600 dark:text-success-400'
+                            : 'text-error-600 dark:text-error-400'
                         }`}
                       >
                         24h: {formatPercentage(priceData.priceChange24h)}
@@ -247,7 +247,7 @@ function App() {
                   onClick={() => setActiveTab(tab.id as ActiveTab)}
                   className={`flex items-center px-3 py-4 text-sm font-medium border-b-2 transition-colors ${
                     activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                      ? 'border-primary-500 text-primary-600 dark:text-primary-400'
                       : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
                   }`}
                 >

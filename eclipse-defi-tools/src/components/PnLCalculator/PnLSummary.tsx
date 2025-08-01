@@ -21,7 +21,7 @@ export const PnLSummary: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
           <p className="mt-2 text-gray-600 dark:text-gray-300">PnLを計算中...</p>
         </div>
       </div>
@@ -32,7 +32,7 @@ export const PnLSummary: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div className="text-center py-8">
-          <p className="text-red-600 dark:text-red-400">{error}</p>
+          <p className="text-error-600 dark:text-error-400">{error}</p>
         </div>
       </div>
     );
@@ -236,8 +236,8 @@ export const PnLSummary: React.FC = () => {
               <span className="text-gray-600 dark:text-gray-300">純利益率:</span>
               <span className={`font-medium ${
                 pnlData.totalPnL >= 0 
-                  ? 'text-green-600 dark:text-green-400' 
-                  : 'text-red-600 dark:text-red-400'
+                  ? 'text-success-600 dark:text-success-400' 
+                  : 'text-error-600 dark:text-error-400'
               }`}>
                 {formatPercentage(pnlData.roi)}
               </span>
@@ -289,8 +289,8 @@ export const PnLSummary: React.FC = () => {
                   </div>
                   <div className={`text-sm ${
                     position.unrealizedPnL >= 0 
-                      ? 'text-green-600 dark:text-green-400' 
-                      : 'text-red-600 dark:text-red-400'
+                      ? 'text-success-600 dark:text-success-400' 
+                      : 'text-error-600 dark:text-error-400'
                   }`}>
                     {position.unrealizedPnL >= 0 ? '+' : ''}${formatNumber(position.unrealizedPnL, 2)}
                   </div>

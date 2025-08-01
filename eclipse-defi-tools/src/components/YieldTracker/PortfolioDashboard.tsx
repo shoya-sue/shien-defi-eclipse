@@ -33,7 +33,7 @@ export const PortfolioDashboard: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
           <p className="mt-2 text-gray-600 dark:text-gray-300">
             ポートフォリオデータを取得中...
           </p>
@@ -46,7 +46,7 @@ export const PortfolioDashboard: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div className="text-center py-8">
-          <p className="text-red-600 dark:text-red-400">{error}</p>
+          <p className="text-error-600 dark:text-error-400">{error}</p>
         </div>
       </div>
     );
@@ -59,7 +59,7 @@ export const PortfolioDashboard: React.FC = () => {
           ポートフォリオ概要
         </h2>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+          <span className="w-2 h-2 bg-success-500 rounded-full"></span>
           <span className="text-sm text-gray-600 dark:text-gray-300">
             リアルタイム更新
           </span>
@@ -71,12 +71,12 @@ export const PortfolioDashboard: React.FC = () => {
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-4 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-blue-100 text-sm font-medium">総ステーキング額</p>
+              <p className="text-primary-100 text-sm font-medium">総ステーキング額</p>
               <p className="text-2xl font-bold">
                 ${formatNumber(portfolioStats.totalStaked, 2, true)}
               </p>
             </div>
-            <div className="bg-blue-400 bg-opacity-30 p-2 rounded-lg">
+            <div className="bg-primary-400 bg-opacity-30 p-2 rounded-lg">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
               </svg>
@@ -88,12 +88,12 @@ export const PortfolioDashboard: React.FC = () => {
         <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-green-100 text-sm font-medium">未請求報酬</p>
+              <p className="text-success-100 text-sm font-medium">未請求報酬</p>
               <p className="text-2xl font-bold">
                 ${formatNumber(portfolioStats.totalPendingRewards, 2, true)}
               </p>
             </div>
-            <div className="bg-green-400 bg-opacity-30 p-2 rounded-lg">
+            <div className="bg-success-400 bg-opacity-30 p-2 rounded-lg">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
               </svg>
@@ -122,12 +122,12 @@ export const PortfolioDashboard: React.FC = () => {
         <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg p-4 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-yellow-100 text-sm font-medium">平均APY</p>
+              <p className="text-warning-100 text-sm font-medium">平均APY</p>
               <p className="text-2xl font-bold">
                 {formatPercentage(portfolioStats.averageAPY)}
               </p>
             </div>
-            <div className="bg-yellow-400 bg-opacity-30 p-2 rounded-lg">
+            <div className="bg-warning-400 bg-opacity-30 p-2 rounded-lg">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
@@ -151,13 +151,13 @@ export const PortfolioDashboard: React.FC = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600 dark:text-gray-300">総収益:</span>
-              <span className="font-medium text-green-600 dark:text-green-400">
+              <span className="font-medium text-success-600 dark:text-success-400">
                 ${formatNumber(portfolioStats.totalRewards + portfolioStats.totalPendingRewards, 2)}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600 dark:text-gray-300">収益率:</span>
-              <span className="font-medium text-green-600 dark:text-green-400">
+              <span className="font-medium text-success-600 dark:text-success-400">
                 {portfolioStats.totalStaked > 0 ? 
                   formatPercentage(((portfolioStats.totalRewards + portfolioStats.totalPendingRewards) / portfolioStats.totalStaked) * 100) : 
                   '0%'
@@ -173,21 +173,21 @@ export const PortfolioDashboard: React.FC = () => {
           </h3>
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-success-500 rounded-full"></div>
               <div className="flex-1">
                 <p className="text-sm text-gray-900 dark:text-white">報酬を獲得しました</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">2時間前</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-primary-500 rounded-full"></div>
               <div className="flex-1">
                 <p className="text-sm text-gray-900 dark:text-white">新しいポジションを追加</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">1日前</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-warning-500 rounded-full"></div>
               <div className="flex-1">
                 <p className="text-sm text-gray-900 dark:text-white">報酬をハーベスト</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">3日前</p>

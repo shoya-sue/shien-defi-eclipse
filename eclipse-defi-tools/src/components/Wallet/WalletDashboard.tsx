@@ -90,7 +90,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, onClose, onTransf
               />
               <button
                 onClick={() => setAmount((balance * 0.9).toString())}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-1 rounded"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-300 px-2 py-1 rounded"
               >
                 Max
               </button>
@@ -101,7 +101,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, onClose, onTransf
           </div>
 
           {error && (
-            <div className="text-red-600 dark:text-red-400 text-sm">
+            <div className="text-error-600 dark:text-error-400 text-sm">
               {error}
             </div>
           )}
@@ -116,7 +116,7 @@ const TransferModal: React.FC<TransferModalProps> = ({ isOpen, onClose, onTransf
             <button
               onClick={handleTransfer}
               disabled={!toAddress || !amount || isTransferring}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {isTransferring ? '送信中...' : '送信'}
             </button>
@@ -159,11 +159,11 @@ export const WalletDashboard: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'success':
-        return 'text-green-600 dark:text-green-400';
+        return 'text-success-600 dark:text-success-400';
       case 'failed':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-error-600 dark:text-error-400';
       case 'pending':
-        return 'text-yellow-600 dark:text-yellow-400';
+        return 'text-warning-600 dark:text-warning-400';
       default:
         return 'text-gray-600 dark:text-gray-400';
     }
@@ -200,7 +200,7 @@ export const WalletDashboard: React.FC = () => {
           <button
             onClick={connect}
             disabled={isConnecting}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400"
+            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-gray-400"
           >
             {isConnecting ? '接続中...' : 'ウォレットを接続'}
           </button>
@@ -215,8 +215,8 @@ export const WalletDashboard: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-              <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
+              <svg className="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
@@ -231,15 +231,15 @@ export const WalletDashboard: React.FC = () => {
           </div>
           <button
             onClick={disconnect}
-            className="px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md"
+            className="px-3 py-2 text-sm text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-900/20 rounded-md"
           >
             切断
           </button>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-            <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+          <div className="mb-4 p-3 bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-md">
+            <p className="text-error-600 dark:text-error-400 text-sm">{error}</p>
           </div>
         )}
 
@@ -284,7 +284,7 @@ export const WalletDashboard: React.FC = () => {
         <div className="flex gap-3 mt-4">
           <button
             onClick={() => setShowTransferModal(true)}
-            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
           >
             送金
           </button>
@@ -317,8 +317,8 @@ export const WalletDashboard: React.FC = () => {
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-3 h-3 rounded-full ${
-                    tx.status === 'success' ? 'bg-green-500' :
-                    tx.status === 'failed' ? 'bg-red-500' : 'bg-yellow-500'
+                    tx.status === 'success' ? 'bg-success-500' :
+                    tx.status === 'failed' ? 'bg-error-500' : 'bg-warning-500'
                   }`}></div>
                   <div>
                     <p className="text-sm font-medium text-gray-900 dark:text-white">

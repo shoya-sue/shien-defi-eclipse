@@ -214,7 +214,7 @@ export const SwapInterface: React.FC = () => {
                       onClick={() => handleSlippageChange(value)}
                       className={`px-3 py-1 text-sm rounded ${
                         slippage === value
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-primary-600 text-white'
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                       }`}
                     >
@@ -311,7 +311,7 @@ export const SwapInterface: React.FC = () => {
         {/* Loading State */}
         {(loading || jupiterLoading || orcaLoading) && isValidAmount && (
           <div className="text-center py-4">
-            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
               最適なレートを検索中...
               {jupiterLoading && <span className="block text-xs mt-1">Jupiter API取得中...</span>}
@@ -323,7 +323,7 @@ export const SwapInterface: React.FC = () => {
         {/* Error State */}
         {(error || jupiterError || orcaError) && (
           <div className="text-center py-4">
-            {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
+            {error && <p className="text-error-600 dark:text-error-400">{error}</p>}
             {jupiterError && (
               <p className="text-orange-600 dark:text-orange-400 text-sm mt-1">
                 Jupiter API: {jupiterError}
@@ -339,12 +339,12 @@ export const SwapInterface: React.FC = () => {
 
         {/* Best Quote */}
         {bestQuote && !loading && (
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+          <div className="bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-green-800 dark:text-green-200">
+              <span className="text-sm font-medium text-success-800 dark:text-success-200">
                 最適なレート
               </span>
-              <span className="text-sm font-semibold text-green-800 dark:text-green-200">
+              <span className="text-sm font-semibold text-success-800 dark:text-success-200">
                 {bestQuote.dex}
               </span>
             </div>
@@ -357,7 +357,7 @@ export const SwapInterface: React.FC = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600 dark:text-gray-300">価格影響:</span>
-                <span className={`font-medium ${bestQuote.priceImpact > 5 ? 'text-red-600' : 'text-gray-900 dark:text-white'}`}>
+                <span className={`font-medium ${bestQuote.priceImpact > 5 ? 'text-error-600' : 'text-gray-900 dark:text-white'}`}>
                   {formatPercentage(bestQuote.priceImpact)}
                 </span>
               </div>
@@ -378,7 +378,7 @@ export const SwapInterface: React.FC = () => {
           className={`w-full py-3 px-4 rounded-lg font-medium text-white transition-colors ${
             !connected || !isValidAmount || loading || jupiterLoading || orcaLoading || !bestQuote
               ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700'
+              : 'bg-primary-600 hover:bg-primary-700'
           }`}
         >
           {!connected
@@ -405,7 +405,7 @@ export const SwapInterface: React.FC = () => {
                 key={`mock-${index}`}
                 className={`border rounded-lg p-3 ${
                   quote === bestQuote
-                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                    ? 'border-success-500 bg-success-50 dark:bg-success-900/20'
                     : 'border-gray-200 dark:border-gray-700'
                 }`}
               >
@@ -418,7 +418,7 @@ export const SwapInterface: React.FC = () => {
                       モック
                     </span>
                     {quote === bestQuote && (
-                      <span className="text-xs bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 px-2 py-1 rounded">
+                      <span className="text-xs bg-success-100 dark:bg-success-800 text-success-800 dark:text-success-200 px-2 py-1 rounded">
                         最適
                       </span>
                     )}
@@ -439,14 +439,14 @@ export const SwapInterface: React.FC = () => {
             {jupiterQuotes.map((quote, index) => (
               <div
                 key={`jupiter-${index}`}
-                className="border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3"
+                className="border border-primary-200 dark:border-primary-700 bg-primary-50 dark:bg-primary-900/20 rounded-lg p-3"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-gray-900 dark:text-white">
                       {quote.provider}
                     </span>
-                    <span className="text-xs bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                    <span className="text-xs bg-primary-100 dark:bg-primary-800 text-primary-800 dark:text-primary-200 px-2 py-1 rounded">
                       実際のAPI
                     </span>
                   </div>
@@ -544,7 +544,7 @@ export const SwapInterface: React.FC = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600 dark:text-gray-300">価格影響</span>
                     <span className={`font-medium ${
-                      swapConfirmation.priceImpactWarning ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'
+                      swapConfirmation.priceImpactWarning ? 'text-error-600 dark:text-error-400' : 'text-gray-900 dark:text-white'
                     }`}>
                       {formatPercentage(swapConfirmation.quote.priceImpact)}
                     </span>
@@ -568,32 +568,32 @@ export const SwapInterface: React.FC = () => {
 
               {/* 警告表示 */}
               {swapConfirmation.recommendation === 'high_risk' && (
-                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
+                <div className="bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-lg p-3">
                   <div className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-error-600 dark:text-error-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
                     </svg>
-                    <span className="text-sm font-medium text-red-800 dark:text-red-200">
+                    <span className="text-sm font-medium text-error-800 dark:text-error-200">
                       高リスク取引
                     </span>
                   </div>
-                  <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                  <p className="text-sm text-error-600 dark:text-error-400 mt-1">
                     価格影響が大きいか、流動性が低い可能性があります。
                   </p>
                 </div>
               )}
 
               {swapConfirmation.recommendation === 'caution' && (
-                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+                <div className="bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-lg p-3">
                   <div className="flex items-center gap-2">
-                    <svg className="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-warning-600 dark:text-warning-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z" />
                     </svg>
-                    <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                    <span className="text-sm font-medium text-warning-800 dark:text-warning-200">
                       注意が必要
                     </span>
                   </div>
-                  <p className="text-sm text-yellow-600 dark:text-yellow-400 mt-1">
+                  <p className="text-sm text-warning-600 dark:text-warning-400 mt-1">
                     価格影響を確認してください。
                   </p>
                 </div>
@@ -610,7 +610,7 @@ export const SwapInterface: React.FC = () => {
                 <button
                   onClick={handleConfirmSwap}
                   disabled={isExecutingSwap}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   {isExecutingSwap ? 'スワップ実行中...' : 'スワップ実行'}
                 </button>

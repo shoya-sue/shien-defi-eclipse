@@ -45,7 +45,7 @@ export const PositionList: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
           <p className="mt-2 text-gray-600 dark:text-gray-300">
             ポジションデータを取得中...
           </p>
@@ -58,7 +58,7 @@ export const PositionList: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div className="text-center py-8">
-          <p className="text-red-600 dark:text-red-400">{error}</p>
+          <p className="text-error-600 dark:text-error-400">{error}</p>
         </div>
       </div>
     );
@@ -135,7 +135,7 @@ export const PositionList: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-100 dark:bg-success-900 text-success-800 dark:text-success-200">
                       {formatPercentage(position.apy)} APY
                     </span>
                     {position.pool.multiplier > 1 && (
@@ -151,7 +151,7 @@ export const PositionList: React.FC = () => {
                     disabled={!isHarvestable || actionLoading === position.positionId}
                     className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
                       isHarvestable
-                        ? 'bg-green-600 hover:bg-green-700 text-white'
+                        ? 'bg-success-600 hover:bg-success-700 text-white'
                         : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                     }`}
                   >
@@ -180,7 +180,7 @@ export const PositionList: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">未請求報酬</p>
-                  <p className="font-semibold text-green-600 dark:text-green-400">
+                  <p className="font-semibold text-success-600 dark:text-success-400">
                     ${formatNumber(totalPendingRewards, 2)}
                   </p>
                 </div>

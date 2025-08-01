@@ -29,7 +29,7 @@ export const PWAInstallPrompt: React.FC = () => {
   // iOS用の特別な説明
   if (isIOS) {
     return (
-      <div className="fixed bottom-4 left-4 right-4 bg-blue-600 text-white rounded-lg p-4 shadow-lg z-50">
+      <div className="fixed bottom-4 left-4 right-4 bg-primary-600 text-white rounded-lg p-4 shadow-lg z-50">
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,10 +38,10 @@ export const PWAInstallPrompt: React.FC = () => {
           </div>
           <div className="flex-1">
             <h3 className="font-medium mb-1">アプリとしてインストール</h3>
-            <p className="text-sm text-blue-100 mb-2">
+            <p className="text-sm text-primary-100 mb-2">
               このアプリをホーム画面に追加できます
             </p>
-            <div className="text-sm text-blue-100 space-y-1">
+            <div className="text-sm text-primary-100 space-y-1">
               <p>1. <strong>共有ボタン</strong> をタップ</p>
               <p>2. <strong>「ホーム画面に追加」</strong> を選択</p>
               <p>3. <strong>「追加」</strong> をタップ</p>
@@ -49,7 +49,7 @@ export const PWAInstallPrompt: React.FC = () => {
           </div>
           <button
             onClick={handleDismiss}
-            className="flex-shrink-0 text-blue-200 hover:text-white"
+            className="flex-shrink-0 text-primary-200 hover:text-white"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -64,8 +64,8 @@ export const PWAInstallPrompt: React.FC = () => {
     <div className="fixed bottom-4 left-4 right-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-lg z-50">
       <div className="flex items-center gap-3">
         <div className="flex-shrink-0">
-          <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-            <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center">
+            <svg className="w-6 h-6 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
           </div>
@@ -88,7 +88,7 @@ export const PWAInstallPrompt: React.FC = () => {
           <button
             onClick={handleInstall}
             disabled={isInstalling}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isInstalling ? (
               <>

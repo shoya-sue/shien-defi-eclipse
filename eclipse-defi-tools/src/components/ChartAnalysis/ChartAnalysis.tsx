@@ -255,7 +255,7 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
             <button
               onClick={fetchChartData}
               disabled={loading}
-              className="px-4 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+              className="px-4 py-1.5 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
             >
               更新
             </button>
@@ -277,8 +277,8 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
               <p className="text-xs text-gray-500 dark:text-gray-400">24h変化</p>
               <p className={`text-lg font-bold ${
                 statistics.changePercent24h >= 0 
-                  ? 'text-green-600 dark:text-green-400' 
-                  : 'text-red-600 dark:text-red-400'
+                  ? 'text-success-600 dark:text-success-400' 
+                  : 'text-error-600 dark:text-error-400'
               }`}>
                 {formatPercentage(statistics.changePercent24h)}
               </p>
@@ -317,9 +317,9 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
               <p className="text-xs text-gray-500 dark:text-gray-400">トレンド</p>
               <p className={`text-lg font-semibold ${
                 analysis?.trend === 'bullish' 
-                  ? 'text-green-600 dark:text-green-400' 
+                  ? 'text-success-600 dark:text-success-400' 
                   : analysis?.trend === 'bearish'
-                  ? 'text-red-600 dark:text-red-400'
+                  ? 'text-error-600 dark:text-error-400'
                   : 'text-gray-600 dark:text-gray-400'
               }`}>
                 {analysis?.trend === 'bullish' ? '上昇' : 
@@ -342,7 +342,7 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
               onClick={() => toggleIndicator(indicator)}
               className={`px-3 py-1 text-sm rounded-md transition-colors ${
                 indicators.has(indicator)
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-primary-600 text-white'
                   : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
@@ -356,11 +356,11 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
       <div className="p-6">
         {loading ? (
           <div className="flex items-center justify-center h-96">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
           </div>
         ) : error ? (
           <div className="text-center py-8">
-            <p className="text-red-600 dark:text-red-400">{error}</p>
+            <p className="text-error-600 dark:text-error-400">{error}</p>
           </div>
         ) : (
           renderChart()
@@ -391,9 +391,9 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
                       key={index}
                       className={`p-3 rounded-lg ${
                         signal.type === 'buy'
-                          ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
+                          ? 'bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800'
                           : signal.type === 'sell'
-                          ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+                          ? 'bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800'
                           : 'bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600'
                       }`}
                     >
@@ -401,9 +401,9 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
                         <div className="flex items-center gap-2">
                           <span className={`text-sm font-medium ${
                             signal.type === 'buy'
-                              ? 'text-green-800 dark:text-green-200'
+                              ? 'text-success-800 dark:text-success-200'
                               : signal.type === 'sell'
-                              ? 'text-red-800 dark:text-red-200'
+                              ? 'text-error-800 dark:text-error-200'
                               : 'text-gray-800 dark:text-gray-200'
                           }`}>
                             {signal.type === 'buy' ? '買い' : 
@@ -440,9 +440,9 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
                     {analysis.resistance.map((level, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-2 bg-red-50 dark:bg-red-900/20 rounded"
+                        className="flex items-center justify-between p-2 bg-error-50 dark:bg-error-900/20 rounded"
                       >
-                        <span className="text-sm text-red-600 dark:text-red-400">
+                        <span className="text-sm text-error-600 dark:text-error-400">
                           R{index + 1}
                         </span>
                         <span className="text-sm font-medium text-gray-900 dark:text-white">
@@ -461,9 +461,9 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
                     {analysis.support.map((level, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded"
+                        className="flex items-center justify-between p-2 bg-success-50 dark:bg-success-900/20 rounded"
                       >
-                        <span className="text-sm text-green-600 dark:text-green-400">
+                        <span className="text-sm text-success-600 dark:text-success-400">
                           S{index + 1}
                         </span>
                         <span className="text-sm font-medium text-gray-900 dark:text-white">
@@ -483,20 +483,20 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
               ピボットポイント
             </h4>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
-              <div className="text-center p-2 bg-red-100 dark:bg-red-900/20 rounded">
-                <p className="text-xs text-red-600 dark:text-red-400">R3</p>
+              <div className="text-center p-2 bg-error-100 dark:bg-error-900/20 rounded">
+                <p className="text-xs text-error-600 dark:text-error-400">R3</p>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                   {formatPrice(analysis.pivotPoints.r3)}
                 </p>
               </div>
-              <div className="text-center p-2 bg-red-50 dark:bg-red-900/10 rounded">
-                <p className="text-xs text-red-600 dark:text-red-400">R2</p>
+              <div className="text-center p-2 bg-error-50 dark:bg-error-900/10 rounded">
+                <p className="text-xs text-error-600 dark:text-error-400">R2</p>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                   {formatPrice(analysis.pivotPoints.r2)}
                 </p>
               </div>
-              <div className="text-center p-2 bg-red-50 dark:bg-red-900/10 rounded">
-                <p className="text-xs text-red-600 dark:text-red-400">R1</p>
+              <div className="text-center p-2 bg-error-50 dark:bg-error-900/10 rounded">
+                <p className="text-xs text-error-600 dark:text-error-400">R1</p>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                   {formatPrice(analysis.pivotPoints.r1)}
                 </p>
@@ -507,20 +507,20 @@ export const ChartAnalysis: React.FC<ChartAnalysisProps> = ({
                   {formatPrice(analysis.pivotPoints.pivot)}
                 </p>
               </div>
-              <div className="text-center p-2 bg-green-50 dark:bg-green-900/10 rounded">
-                <p className="text-xs text-green-600 dark:text-green-400">S1</p>
+              <div className="text-center p-2 bg-success-50 dark:bg-success-900/10 rounded">
+                <p className="text-xs text-success-600 dark:text-success-400">S1</p>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                   {formatPrice(analysis.pivotPoints.s1)}
                 </p>
               </div>
-              <div className="text-center p-2 bg-green-50 dark:bg-green-900/10 rounded">
-                <p className="text-xs text-green-600 dark:text-green-400">S2</p>
+              <div className="text-center p-2 bg-success-50 dark:bg-success-900/10 rounded">
+                <p className="text-xs text-success-600 dark:text-success-400">S2</p>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                   {formatPrice(analysis.pivotPoints.s2)}
                 </p>
               </div>
-              <div className="text-center p-2 bg-green-100 dark:bg-green-900/20 rounded">
-                <p className="text-xs text-green-600 dark:text-green-400">S3</p>
+              <div className="text-center p-2 bg-success-100 dark:bg-success-900/20 rounded">
+                <p className="text-xs text-success-600 dark:text-success-400">S3</p>
                 <p className="text-sm font-medium text-gray-900 dark:text-white">
                   {formatPrice(analysis.pivotPoints.s3)}
                 </p>

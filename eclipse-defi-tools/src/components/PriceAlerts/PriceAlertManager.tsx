@@ -157,7 +157,7 @@ const CreateAlertModal: React.FC<CreateAlertModalProps> = ({ isOpen, onClose, on
           </div>
 
           {error && (
-            <div className="text-red-600 dark:text-red-400 text-sm">
+            <div className="text-error-600 dark:text-error-400 text-sm">
               {error}
             </div>
           )}
@@ -172,7 +172,7 @@ const CreateAlertModal: React.FC<CreateAlertModalProps> = ({ isOpen, onClose, on
             <button
               onClick={handleCreateAlert}
               disabled={!targetPrice || isCreating}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {isCreating ? '作成中...' : 'アラート作成'}
             </button>
@@ -261,14 +261,14 @@ export const PriceAlertManager: React.FC = () => {
           {notificationPermission !== 'granted' && notificationPermission !== 'unknown' && (
             <button
               onClick={handleRequestNotification}
-              className="px-3 py-2 text-sm bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200 rounded-md hover:bg-yellow-200 dark:hover:bg-yellow-900/30"
+              className="px-3 py-2 text-sm bg-warning-100 dark:bg-warning-900/20 text-warning-800 dark:text-warning-200 rounded-md hover:bg-warning-200 dark:hover:bg-warning-900/30"
             >
               通知を有効化
             </button>
           )}
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
           >
             + アラート作成
           </button>
@@ -281,13 +281,13 @@ export const PriceAlertManager: React.FC = () => {
           <p className="text-sm text-gray-600 dark:text-gray-300">総アラート数</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
         </div>
-        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-          <p className="text-sm text-blue-600 dark:text-blue-300">アクティブ</p>
-          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.active}</p>
+        <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4">
+          <p className="text-sm text-primary-600 dark:text-primary-300">アクティブ</p>
+          <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">{stats.active}</p>
         </div>
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-          <p className="text-sm text-green-600 dark:text-green-300">トリガー済み</p>
-          <p className="text-2xl font-bold text-green-600 dark:text-green-400">{stats.triggered}</p>
+        <div className="bg-success-50 dark:bg-success-900/20 rounded-lg p-4">
+          <p className="text-sm text-success-600 dark:text-success-300">トリガー済み</p>
+          <p className="text-2xl font-bold text-success-600 dark:text-success-400">{stats.triggered}</p>
         </div>
         <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
           <p className="text-sm text-purple-600 dark:text-purple-300">24h以内</p>
@@ -304,7 +304,7 @@ export const PriceAlertManager: React.FC = () => {
               onClick={() => setFilter(filterOption)}
               className={`px-3 py-2 text-sm rounded-md ${
                 filter === filterOption
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-primary-600 text-white'
                   : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
               }`}
             >
@@ -317,7 +317,7 @@ export const PriceAlertManager: React.FC = () => {
         {triggeredAlerts.length > 0 && (
           <button
             onClick={clearTriggeredAlerts}
-            className="px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md"
+            className="px-3 py-2 text-sm text-error-600 dark:text-error-400 hover:bg-error-50 dark:hover:bg-error-900/20 rounded-md"
           >
             トリガー済みをクリア
           </button>
@@ -326,8 +326,8 @@ export const PriceAlertManager: React.FC = () => {
 
       {/* エラー表示 */}
       {error && (
-        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
-          <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+        <div className="mb-4 p-3 bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-md">
+          <p className="text-error-600 dark:text-error-400 text-sm">{error}</p>
         </div>
       )}
 
@@ -335,7 +335,7 @@ export const PriceAlertManager: React.FC = () => {
       <div className="space-y-3">
         {loading && (
           <div className="text-center py-4">
-            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">読み込み中...</p>
           </div>
         )}
@@ -353,17 +353,17 @@ export const PriceAlertManager: React.FC = () => {
             key={alert.id}
             className={`border rounded-lg p-4 ${
               alert.isTriggered
-                ? 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20'
+                ? 'border-success-200 dark:border-success-800 bg-success-50 dark:bg-success-900/20'
                 : alert.isActive
-                ? 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20'
+                ? 'border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20'
                 : 'border-gray-200 dark:border-gray-700'
             }`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className={`w-3 h-3 rounded-full ${
-                  alert.isTriggered ? 'bg-green-500' :
-                  alert.isActive ? 'bg-blue-500' : 'bg-gray-400'
+                  alert.isTriggered ? 'bg-success-500' :
+                  alert.isActive ? 'bg-primary-500' : 'bg-gray-400'
                 }`}></div>
                 
                 <div>
@@ -379,7 +379,7 @@ export const PriceAlertManager: React.FC = () => {
                   <div className="text-sm text-gray-600 dark:text-gray-300">
                     現在価格: {formatPrice(alert.currentPrice)}
                     {alert.isTriggered && alert.triggeredAt && (
-                      <span className="ml-2 text-green-600 dark:text-green-400">
+                      <span className="ml-2 text-success-600 dark:text-success-400">
                         • {new Date(alert.triggeredAt).toLocaleString()} にトリガー
                       </span>
                     )}
@@ -394,7 +394,7 @@ export const PriceAlertManager: React.FC = () => {
                     className={`px-3 py-1 text-xs rounded ${
                       alert.isActive
                         ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                        : 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                        : 'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
                     }`}
                   >
                     {alert.isActive ? '無効化' : '有効化'}
@@ -403,7 +403,7 @@ export const PriceAlertManager: React.FC = () => {
                 
                 <button
                   onClick={() => handleDeleteAlert(alert.id)}
-                  className="px-3 py-1 text-xs bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded hover:bg-red-200 dark:hover:bg-red-800"
+                  className="px-3 py-1 text-xs bg-error-100 dark:bg-error-900 text-error-700 dark:text-error-300 rounded hover:bg-error-200 dark:hover:bg-error-800"
                 >
                   削除
                 </button>

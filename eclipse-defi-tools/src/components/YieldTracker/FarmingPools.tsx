@@ -48,7 +48,7 @@ export const FarmingPools: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
           <p className="mt-2 text-gray-600 dark:text-gray-300">
             ファーミングプールを取得中...
           </p>
@@ -61,7 +61,7 @@ export const FarmingPools: React.FC = () => {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
         <div className="text-center py-8">
-          <p className="text-red-600 dark:text-red-400">{error}</p>
+          <p className="text-error-600 dark:text-error-400">{error}</p>
         </div>
       </div>
     );
@@ -102,7 +102,7 @@ export const FarmingPools: React.FC = () => {
                     {pool.name}
                   </span>
                 </div>
-                <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                <span className="text-2xl font-bold text-success-600 dark:text-success-400">
                   {formatPercentage(pool.apy)}
                 </span>
               </div>
@@ -127,7 +127,7 @@ export const FarmingPools: React.FC = () => {
                 disabled={!publicKey}
                 className={`w-full mt-3 py-2 px-4 rounded-lg font-medium transition-colors ${
                   publicKey
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                    ? 'bg-primary-600 hover:bg-primary-700 text-white'
                     : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                 }`}
               >
@@ -192,7 +192,7 @@ export const FarmingPools: React.FC = () => {
                     <span className="capitalize text-gray-900 dark:text-white">{pool.dex}</span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="font-semibold text-green-600 dark:text-green-400">
+                    <span className="font-semibold text-success-600 dark:text-success-400">
                       {formatPercentage(pool.apy)}
                     </span>
                   </td>
@@ -223,7 +223,7 @@ export const FarmingPools: React.FC = () => {
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                       pool.isActive
-                        ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                        ? 'bg-success-100 dark:bg-success-900 text-success-800 dark:text-success-200'
                         : 'bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200'
                     }`}>
                       {pool.isActive ? 'アクティブ' : '非アクティブ'}
@@ -235,7 +235,7 @@ export const FarmingPools: React.FC = () => {
                       disabled={!publicKey || !pool.isActive}
                       className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
                         publicKey && pool.isActive
-                          ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                          ? 'bg-primary-600 hover:bg-primary-700 text-white'
                           : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                       }`}
                     >
@@ -322,7 +322,7 @@ export const FarmingPools: React.FC = () => {
                   disabled={!validateAmount(stakeAmount) || stakeLoading}
                   className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
                     validateAmount(stakeAmount) && !stakeLoading
-                      ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                      ? 'bg-primary-600 hover:bg-primary-700 text-white'
                       : 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
                   }`}
                 >

@@ -130,7 +130,7 @@ export const ImpermanentLossSimulator: React.FC = () => {
                   onClick={() => handleScenarioChange(scenario.id)}
                   className={`px-3 py-2 text-sm rounded ${
                     selectedScenario === scenario.id
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-primary-600 text-white'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }`}
                 >
@@ -236,14 +236,14 @@ export const ImpermanentLossSimulator: React.FC = () => {
           {impermanentLoss && (
             <>
               {/* Impermanent Loss Summary */}
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-3">
+              <div className="bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-error-800 dark:text-error-200 mb-3">
                   Impermanent Loss
                 </h3>
-                <div className="text-3xl font-bold text-red-600 dark:text-red-400 mb-2">
+                <div className="text-3xl font-bold text-error-600 dark:text-error-400 mb-2">
                   {formatPercentage(impermanentLoss.impermanentLoss)}
                 </div>
-                <div className="text-sm text-red-700 dark:text-red-300">
+                <div className="text-sm text-error-700 dark:text-error-300">
                   流動性提供により発生する損失
                 </div>
               </div>
@@ -268,7 +268,7 @@ export const ImpermanentLossSimulator: React.FC = () => {
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 dark:text-gray-300">手数料収入:</span>
-                    <span className="font-medium text-green-600 dark:text-green-400">
+                    <span className="font-medium text-success-600 dark:text-success-400">
                       ${formatNumber(impermanentLoss.feesEarned, 2)}
                     </span>
                   </div>
@@ -277,8 +277,8 @@ export const ImpermanentLossSimulator: React.FC = () => {
                       <span className="font-medium text-gray-900 dark:text-white">純結果:</span>
                       <span className={`font-bold ${
                         impermanentLoss.netResult >= 0 
-                          ? 'text-green-600 dark:text-green-400' 
-                          : 'text-red-600 dark:text-red-400'
+                          ? 'text-success-600 dark:text-success-400' 
+                          : 'text-error-600 dark:text-error-400'
                       }`}>
                         {impermanentLoss.netResult >= 0 ? '+' : ''}
                         {formatPercentage(impermanentLoss.netResult)}
@@ -289,37 +289,37 @@ export const ImpermanentLossSimulator: React.FC = () => {
               </div>
 
               {/* Risk Assessment */}
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-3">
+              <div className="bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-warning-800 dark:text-warning-200 mb-3">
                   リスク評価
                 </h3>
                 <div className="space-y-2 text-sm">
                   {Math.abs(impermanentLoss.impermanentLoss) < 2 && (
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                      <span className="text-green-700 dark:text-green-300">
+                      <span className="w-2 h-2 bg-success-500 rounded-full"></span>
+                      <span className="text-success-700 dark:text-success-300">
                         低リスク: 価格変動が小さく、IL は軽微です
                       </span>
                     </div>
                   )}
                   {Math.abs(impermanentLoss.impermanentLoss) >= 2 && Math.abs(impermanentLoss.impermanentLoss) < 10 && (
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
-                      <span className="text-yellow-700 dark:text-yellow-300">
+                      <span className="w-2 h-2 bg-warning-500 rounded-full"></span>
+                      <span className="text-warning-700 dark:text-warning-300">
                         中リスク: 適度な価格変動による IL が発生
                       </span>
                     </div>
                   )}
                   {Math.abs(impermanentLoss.impermanentLoss) >= 10 && (
                     <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                      <span className="text-red-700 dark:text-red-300">
+                      <span className="w-2 h-2 bg-error-500 rounded-full"></span>
+                      <span className="text-error-700 dark:text-error-300">
                         高リスク: 大きな価格変動により、重大な IL が発生
                       </span>
                     </div>
                   )}
                   
-                  <div className="mt-3 text-yellow-700 dark:text-yellow-300">
+                  <div className="mt-3 text-warning-700 dark:text-warning-300">
                     <strong>推奨:</strong> 手数料収入が IL をカバーできるか確認してください
                   </div>
                 </div>

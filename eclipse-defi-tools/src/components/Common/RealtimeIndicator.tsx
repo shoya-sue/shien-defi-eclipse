@@ -13,7 +13,7 @@ export const RealtimeIndicator: React.FC<RealtimeIndicatorProps> = ({ className 
     <div className={`flex items-center gap-2 ${className}`}>
       <div className="flex items-center gap-1">
         <div className={`w-2 h-2 rounded-full ${
-          isConnected ? 'bg-green-500' : 'bg-gray-400'
+          isConnected ? 'bg-success-500' : 'bg-gray-400'
         }`} />
         <span className="text-xs text-gray-600 dark:text-gray-400">
           {isConnected ? 'リアルタイム' : 'モック'}
@@ -26,7 +26,7 @@ export const RealtimeIndicator: React.FC<RealtimeIndicatorProps> = ({ className 
             {activeSubscriptions.length} 更新中
           </span>
           {isConnected && (
-            <div className="w-1 h-1 bg-blue-500 rounded-full animate-pulse" />
+            <div className="w-1 h-1 bg-primary-500 rounded-full animate-pulse" />
           )}
         </div>
       )}

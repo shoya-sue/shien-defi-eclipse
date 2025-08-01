@@ -112,7 +112,7 @@ export const LiquidityAnalysis: React.FC = () => {
           流動性プール分析
         </h2>
         <div className="flex items-center gap-2">
-          <div className={`w-3 h-3 rounded-full ${isHealthy ? 'bg-green-500' : 'bg-red-500'}`}></div>
+          <div className={`w-3 h-3 rounded-full ${isHealthy ? 'bg-success-500' : 'bg-error-500'}`}></div>
           <span className="text-sm text-gray-600 dark:text-gray-300">
             {isHealthy ? 'Orca API 接続中' : 'Orca API 切断'}
           </span>
@@ -121,8 +121,8 @@ export const LiquidityAnalysis: React.FC = () => {
 
       {/* エラー表示 */}
       {poolsError && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">
+        <div className="bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-lg p-4">
+          <p className="text-error-600 dark:text-error-400">
             プールデータの取得に失敗しました: {poolsError}
           </p>
         </div>
@@ -198,7 +198,7 @@ export const LiquidityAnalysis: React.FC = () => {
                     <span className="text-sm font-medium text-gray-900 dark:text-white">
                       Pool #{index + 1}
                     </span>
-                    <span className="text-xs bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 px-2 py-1 rounded">
+                    <span className="text-xs bg-success-100 dark:bg-success-800 text-success-800 dark:text-success-200 px-2 py-1 rounded">
                       APY: {formatPercentage(pool.apy)}
                     </span>
                   </div>
@@ -251,19 +251,19 @@ export const LiquidityAnalysis: React.FC = () => {
                     </td>
                     <td className="py-2">
                       <span className={`${
-                        analysis.priceImpact > 10 ? 'text-red-600' :
-                        analysis.priceImpact > 5 ? 'text-yellow-600' :
-                        'text-green-600'
+                        analysis.priceImpact > 10 ? 'text-error-600' :
+                        analysis.priceImpact > 5 ? 'text-warning-600' :
+                        'text-success-600'
                       }`}>
                         {formatPercentage(analysis.priceImpact)}
                       </span>
                     </td>
                     <td className="py-2">
                       <span className={`text-xs px-2 py-1 rounded ${
-                        analysis.priceImpact > 10 ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-                        analysis.priceImpact > 5 ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                        analysis.priceImpact > 2 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' :
-                        'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                        analysis.priceImpact > 10 ? 'bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200' :
+                        analysis.priceImpact > 5 ? 'bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-200' :
+                        analysis.priceImpact > 2 ? 'bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200' :
+                        'bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200'
                       }`}>
                         {analysis.priceImpact > 10 ? '避けるべき' :
                          analysis.priceImpact > 5 ? '注意' :
@@ -292,7 +292,7 @@ export const LiquidityAnalysis: React.FC = () => {
                 onClick={() => setAnalysisType(type)}
                 className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                   analysisType === type
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-primary-600 text-white'
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
@@ -305,14 +305,14 @@ export const LiquidityAnalysis: React.FC = () => {
         {/* 全体統計 */}
         {analysis && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <div className="text-center p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg">
+              <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                 {formatPercentage(analysis.averageApy)}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-300">平均APY</div>
             </div>
-            <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+            <div className="text-center p-4 bg-success-50 dark:bg-success-900/20 rounded-lg">
+              <div className="text-2xl font-bold text-success-600 dark:text-success-400">
                 ${(analysis.totalLiquidity / 1000000).toFixed(1)}M
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-300">総流動性</div>
@@ -329,7 +329,7 @@ export const LiquidityAnalysis: React.FC = () => {
         {/* プール一覧 */}
         {poolsLoading ? (
           <div className="text-center py-8">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
             <p className="mt-2 text-gray-600 dark:text-gray-300">プールデータを読み込み中...</p>
           </div>
         ) : (

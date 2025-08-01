@@ -67,8 +67,8 @@ export const TransactionImporter: React.FC = () => {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-sm text-green-600 dark:text-green-400">接続済み</span>
+                <div className="w-2 h-2 bg-success-500 rounded-full"></div>
+                <span className="text-sm text-success-600 dark:text-success-400">接続済み</span>
               </div>
             </div>
           ) : (
@@ -134,7 +134,7 @@ export const TransactionImporter: React.FC = () => {
             className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
               loading || (!publicKey && !validateAddress(manualAddress))
                 ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700 text-white'
+                : 'bg-primary-600 hover:bg-primary-700 text-white'
             }`}
           >
             {loading ? (
@@ -156,8 +156,8 @@ export const TransactionImporter: React.FC = () => {
 
         {/* Error Display */}
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-            <p className="text-red-600 dark:text-red-400">{error}</p>
+          <div className="bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-lg p-4">
+            <p className="text-error-600 dark:text-error-400">{error}</p>
           </div>
         )}
 
@@ -210,8 +210,8 @@ export const TransactionImporter: React.FC = () => {
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-2 h-2 rounded-full ${
-                      tx.status === 'success' ? 'bg-green-500' : 
-                      tx.status === 'failed' ? 'bg-red-500' : 'bg-yellow-500'
+                      tx.status === 'success' ? 'bg-success-500' : 
+                      tx.status === 'failed' ? 'bg-error-500' : 'bg-warning-500'
                     }`}></div>
                     <div>
                       <div className="flex items-center gap-2">

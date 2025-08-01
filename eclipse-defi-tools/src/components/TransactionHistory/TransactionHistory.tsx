@@ -122,11 +122,11 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletAd
   const getStatusColor = (status: TransactionStatus) => {
     switch (status) {
       case TransactionStatus.PENDING:
-        return 'text-yellow-600 dark:text-yellow-400';
+        return 'text-warning-600 dark:text-warning-400';
       case TransactionStatus.CONFIRMED:
-        return 'text-green-600 dark:text-green-400';
+        return 'text-success-600 dark:text-success-400';
       case TransactionStatus.FAILED:
-        return 'text-red-600 dark:text-red-400';
+        return 'text-error-600 dark:text-error-400';
       case TransactionStatus.EXPIRED:
         return 'text-gray-600 dark:text-gray-400';
       default:
@@ -161,7 +161,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletAd
   if (loading && transactions.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
       </div>
     );
   }
@@ -189,7 +189,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletAd
             </button>
             <button
               onClick={handleExportCSV}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
             >
               📥 CSV
             </button>
@@ -209,25 +209,25 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletAd
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">成功</p>
-              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+              <p className="text-2xl font-bold text-success-600 dark:text-success-400">
                 {statistics.successfulTransactions}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">失敗</p>
-              <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+              <p className="text-2xl font-bold text-error-600 dark:text-error-400">
                 {statistics.failedTransactions}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">保留中</p>
-              <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
+              <p className="text-2xl font-bold text-warning-600 dark:text-warning-400">
                 {statistics.pendingTransactions}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400">総取引量</p>
-              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                 {statistics.totalVolume.toFixed(2)} SOL
               </p>
             </div>
@@ -332,8 +332,8 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletAd
 
       {/* エラー表示 */}
       {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800">
-          <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
+        <div className="p-4 bg-error-50 dark:bg-error-900/20 border-b border-error-200 dark:border-error-800">
+          <p className="text-sm text-error-800 dark:text-error-300">{error}</p>
         </div>
       )}
 
@@ -416,7 +416,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletAd
                       href={`https://explorer.solana.com/tx/${tx.signature}?cluster=mainnet-beta`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+                      className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
                     >
                       {tx.signature.slice(0, 8)}...{tx.signature.slice(-8)}
                     </a>
@@ -437,7 +437,7 @@ export const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletAd
             </p>
             <button
               onClick={() => clearHistory()}
-              className="text-sm text-red-600 dark:text-red-400 hover:underline"
+              className="text-sm text-error-600 dark:text-error-400 hover:underline"
             >
               履歴をクリア
             </button>

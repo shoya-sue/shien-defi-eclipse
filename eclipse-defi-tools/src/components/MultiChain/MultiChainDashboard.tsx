@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { multiChainService } from '../../services/multiChainService';
 import type {
   ChainInfo,
@@ -29,7 +29,7 @@ export const MultiChainDashboard: React.FC = () => {
   const [bridgeQuotes, setBridgeQuotes] = useState<BridgeQuote[]>([]);
 
   // モックウォレットアドレス（実際の実装では接続されたウォレットから取得）
-  const mockWalletAddresses = {
+  const mockWalletAddresses = useMemo(() => ({
     [ChainType.ECLIPSE]: '0x1234...5678',
     [ChainType.SOLANA]: '11111111111111111111111111111111',
     [ChainType.ETHEREUM]: '0xabcd...ef01',
@@ -37,10 +37,10 @@ export const MultiChainDashboard: React.FC = () => {
     [ChainType.ARBITRUM]: '0x3456...789a',
     [ChainType.OPTIMISM]: '0x4567...89ab',
     [ChainType.BSC]: '0x5678...9abc',
-  };
+  }), []);
 
   // データ取得
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -61,10 +61,10 @@ export const MultiChainDashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [mockWalletAddresses]);
 
   // ブリッジ見積もり取得
-  const fetchBridgeQuotes = async () => {
+  const fetchBridgeQuotes = useCallback(async () => {
     const amount = parseFloat(bridgeAmount);
     if (isNaN(amount) || amount <= 0) return;
 
@@ -79,7 +79,7 @@ export const MultiChainDashboard: React.FC = () => {
     } catch (err) {
       console.error('ブリッジ見積もり取得エラー:', err);
     }
-  };
+  }, [selectedFromChain, selectedToChain, selectedToken, bridgeAmount]);
 
   useEffect(() => {
     fetchData();
@@ -93,11 +93,11 @@ export const MultiChainDashboard: React.FC = () => {
 
   // チェーン概要の表示
   const renderChainOverview = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
       {chains.map(chain => (
         <div
           key={chain.type}
-          className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 card-hover"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
@@ -112,7 +112,7 @@ export const MultiChainDashboard: React.FC = () => {
               </div>
             </div>
             {chain.isTestnet && (
-              <span className="text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded">
+              <span className="text-xs bg-warning-100 dark:bg-warning-900 text-warning-800 dark:text-warning-200 px-3 py-1.5 rounded-full font-medium">
                 Testnet
               </span>
             )}
@@ -123,7 +123,7 @@ export const MultiChainDashboard: React.FC = () => {
               {chain.features.map((feature, index) => (
                 <span
                   key={index}
-                  className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded"
+                  className="text-xs bg-primary-100 dark:bg-primary-900 text-primary-800 dark:text-primary-200 px-3 py-1.5 rounded-full font-medium"
                 >
                   {feature}
                 </span>
@@ -135,7 +135,7 @@ export const MultiChainDashboard: React.FC = () => {
                 href={chain.explorerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+                className="text-sm text-primary-600 dark:text-primary-400 hover:underline flex items-center gap-1"
               >
                 エクスプローラー
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,7 +155,7 @@ export const MultiChainDashboard: React.FC = () => {
       {crossChainTokens.map((token, index) => (
         <div
           key={index}
-          className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+          className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 card-hover"
         >
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -174,7 +174,7 @@ export const MultiChainDashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
             {token.chains.map((chainToken, idx) => {
               const chain = chains.find(c => c.type === chainToken.chain);
               if (!chain) return null;
@@ -182,7 +182,7 @@ export const MultiChainDashboard: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-3"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-200"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
@@ -232,7 +232,7 @@ export const MultiChainDashboard: React.FC = () => {
               <select
                 value={selectedFromChain}
                 onChange={(e) => setSelectedFromChain(e.target.value as ChainType)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
                 {chains.map(chain => (
                   <option key={chain.type} value={chain.type}>
@@ -249,7 +249,7 @@ export const MultiChainDashboard: React.FC = () => {
               <select
                 value={selectedToChain}
                 onChange={(e) => setSelectedToChain(e.target.value as ChainType)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
               >
                 {chains
                   .filter(chain => chain.type !== selectedFromChain)
@@ -301,7 +301,7 @@ export const MultiChainDashboard: React.FC = () => {
           {bridgeQuotes.map((quote, index) => (
             <div
               key={index}
-              className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+              className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 card-hover"
             >
               <div className="flex items-center justify-between mb-4">
                 <div>
@@ -320,7 +320,7 @@ export const MultiChainDashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                 <div>
                   <p className="text-gray-600 dark:text-gray-400">手数料</p>
                   <p className="font-medium text-gray-900 dark:text-white">
@@ -341,7 +341,7 @@ export const MultiChainDashboard: React.FC = () => {
                 </div>
               </div>
 
-              <button className="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              <button className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium">
                 このブリッジを使用
               </button>
             </div>
@@ -353,7 +353,7 @@ export const MultiChainDashboard: React.FC = () => {
 
   // チェーン統計の表示
   const renderChainStats = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
       {chainStats.map((stat, index) => {
         const chain = chains.find(c => c.type === stat.chain);
         if (!chain) return null;
@@ -361,7 +361,7 @@ export const MultiChainDashboard: React.FC = () => {
         return (
           <div
             key={index}
-            className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700"
+            className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-md border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 card-hover"
           >
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl">{chain.logo}</span>
@@ -370,7 +370,7 @@ export const MultiChainDashboard: React.FC = () => {
               </h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <p className="text-sm text-gray-600 dark:text-gray-400">TVL</p>
                 <p className="text-xl font-bold text-gray-900 dark:text-white">
@@ -441,7 +441,7 @@ export const MultiChainDashboard: React.FC = () => {
               return (
                 <div
                   key={index}
-                  className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
+                  className="border border-gray-200 dark:border-gray-700 rounded-xl p-5 hover:border-primary-300 dark:hover:border-primary-700 transition-all duration-200"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
@@ -482,11 +482,11 @@ export const MultiChainDashboard: React.FC = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg card-hover">
+      <div className="p-8 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
               マルチチェーンダッシュボード
             </h2>
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
@@ -497,7 +497,7 @@ export const MultiChainDashboard: React.FC = () => {
           <button
             onClick={fetchData}
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+            className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 transition-all duration-200 shadow-md hover:shadow-lg"
           >
             データ更新
           </button>
@@ -517,28 +517,30 @@ export const MultiChainDashboard: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setViewMode(tab.id as ViewMode)}
-              className={`flex items-center px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+              className={`flex items-center px-3 sm:px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                 viewMode === tab.id
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                  ? 'border-primary-500 text-primary-600 dark:text-primary-400'
                   : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
             >
-              <span className="mr-2">{tab.icon}</span>
-              {tab.label}
+              <span className="mr-1.5 sm:mr-2">{tab.icon}</span>
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden text-xs">{tab.label.slice(0, 4)}</span>
             </button>
           ))}
         </div>
       </div>
 
       {/* コンテンツ */}
-      <div className="p-6">
+      <div className="p-8">
         {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="flex flex-col items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+            <p className="mt-4 text-gray-600 dark:text-gray-400 animate-pulse">データを読み込んでいます...</p>
           </div>
         ) : error ? (
           <div className="text-center py-8">
-            <p className="text-red-600 dark:text-red-400">{error}</p>
+            <p className="text-error-600 dark:text-error-400">{error}</p>
           </div>
         ) : (
           <>

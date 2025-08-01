@@ -38,7 +38,7 @@ export const PnLCalculator: React.FC = () => {
               onClick={() => setActiveTab(tab.id as PnLCalculatorTab)}
               className={`flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                 activeTab === tab.id
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-primary-600 text-white'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
               }`}
             >
@@ -53,11 +53,11 @@ export const PnLCalculator: React.FC = () => {
       {renderContent()}
 
       {/* Information Panel */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-        <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">
+      <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg p-4">
+        <h3 className="text-lg font-semibold text-primary-800 dark:text-primary-200 mb-2">
           PnL計算について
         </h3>
-        <div className="text-sm text-blue-700 dark:text-blue-300 space-y-2">
+        <div className="text-sm text-primary-700 dark:text-primary-300 space-y-2">
           <p>
             <strong>実現損益:</strong> 実際に売却・交換した取引から確定した損益。
             税務上の課税対象となります。

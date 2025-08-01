@@ -136,7 +136,7 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
                     onClick={() => setActiveTab(tab.id as 'general' | 'notifications' | 'privacy' | 'advanced' | 'performance')}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-left ${
                       activeTab === tab.id
-                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                        ? 'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -464,13 +464,13 @@ const UserSettingsComponent: React.FC<UserSettingsProps> = ({
             <div className="flex gap-3">
               <button
                 onClick={handleReset}
-                className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-white dark:bg-gray-700 border border-red-300 dark:border-red-600 rounded-md hover:bg-red-50 dark:hover:bg-red-900"
+                className="px-4 py-2 text-sm font-medium text-error-600 dark:text-error-400 bg-white dark:bg-gray-700 border border-error-300 dark:border-error-600 rounded-md hover:bg-error-50 dark:hover:bg-error-900"
               >
                 リセット
               </button>
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+                className="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-md"
               >
                 保存して閉じる
               </button>

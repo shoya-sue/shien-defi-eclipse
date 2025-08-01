@@ -102,7 +102,7 @@ export const TaxReport: React.FC = () => {
           <div className="flex items-end">
             <button
               onClick={handleGenerateReport}
-              className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+              className="w-full px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
             >
               レポート生成
             </button>
@@ -114,7 +114,7 @@ export const TaxReport: React.FC = () => {
           <button
             onClick={handleExportCSV}
             disabled={exportLoading}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-success-600 hover:bg-success-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -144,38 +144,38 @@ export const TaxReport: React.FC = () => {
           
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+            <div className="bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-success-600 dark:text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
-                <span className="text-sm font-medium text-green-800 dark:text-green-200">総利益</span>
+                <span className="text-sm font-medium text-success-800 dark:text-success-200">総利益</span>
               </div>
-              <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+              <p className="text-2xl font-bold text-success-600 dark:text-success-400">
                 ${formatNumber(taxReport.totalGains, 2)}
               </p>
             </div>
             
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+            <div className="bg-error-50 dark:bg-error-900/20 border border-error-200 dark:border-error-800 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-error-600 dark:text-error-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
                 </svg>
-                <span className="text-sm font-medium text-red-800 dark:text-red-200">総損失</span>
+                <span className="text-sm font-medium text-error-800 dark:text-error-200">総損失</span>
               </div>
-              <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+              <p className="text-2xl font-bold text-error-600 dark:text-error-400">
                 ${formatNumber(taxReport.totalLosses, 2)}
               </p>
             </div>
             
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+            <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-sm font-medium text-blue-800 dark:text-blue-200">短期利益</span>
+                <span className="text-sm font-medium text-primary-800 dark:text-primary-200">短期利益</span>
               </div>
-              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                 ${formatNumber(taxReport.shortTermGains, 2)}
               </p>
             </div>
@@ -194,27 +194,27 @@ export const TaxReport: React.FC = () => {
           </div>
 
           {/* Tax Calculation */}
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
-            <h4 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-3">
+          <div className="bg-warning-50 dark:bg-warning-900/20 border border-warning-200 dark:border-warning-800 rounded-lg p-4 mb-6">
+            <h4 className="text-lg font-semibold text-warning-800 dark:text-warning-200 mb-3">
               概算税額（参考値）
             </h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-yellow-700 dark:text-yellow-300">短期利益税 (30%):</span>
-                <span className="font-medium text-yellow-800 dark:text-yellow-200">
+                <span className="text-warning-700 dark:text-warning-300">短期利益税 (30%):</span>
+                <span className="font-medium text-warning-800 dark:text-warning-200">
                   ${formatNumber(taxReport.shortTermGains * 0.3, 2)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-yellow-700 dark:text-yellow-300">長期利益税 (15%):</span>
-                <span className="font-medium text-yellow-800 dark:text-yellow-200">
+                <span className="text-warning-700 dark:text-warning-300">長期利益税 (15%):</span>
+                <span className="font-medium text-warning-800 dark:text-warning-200">
                   ${formatNumber(taxReport.longTermGains * 0.15, 2)}
                 </span>
               </div>
-              <div className="border-t border-yellow-200 dark:border-yellow-700 pt-2">
+              <div className="border-t border-warning-200 dark:border-warning-700 pt-2">
                 <div className="flex justify-between">
-                  <span className="font-semibold text-yellow-800 dark:text-yellow-200">概算税額:</span>
-                  <span className="font-bold text-yellow-800 dark:text-yellow-200">
+                  <span className="font-semibold text-warning-800 dark:text-warning-200">概算税額:</span>
+                  <span className="font-bold text-warning-800 dark:text-warning-200">
                     ${formatNumber(taxReport.shortTermGains * 0.3 + taxReport.longTermGains * 0.15, 2)}
                   </span>
                 </div>

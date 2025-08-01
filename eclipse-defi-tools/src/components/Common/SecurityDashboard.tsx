@@ -36,10 +36,10 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'critical': return 'text-red-600 bg-red-100';
+      case 'critical': return 'text-error-600 bg-error-100';
       case 'high': return 'text-orange-600 bg-orange-100';
-      case 'medium': return 'text-yellow-600 bg-yellow-100';
-      case 'low': return 'text-blue-600 bg-blue-100';
+      case 'medium': return 'text-warning-600 bg-warning-100';
+      case 'low': return 'text-primary-600 bg-primary-100';
       default: return 'text-gray-600 bg-gray-100';
     }
   };
@@ -62,7 +62,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-            <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-error-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
             セキュリティダッシュボード
@@ -92,7 +92,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
                     onClick={() => setActiveTab(tab.id as 'overview' | 'events' | 'settings')}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-left ${
                       activeTab === tab.id
-                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                        ? 'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
@@ -115,26 +115,26 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
                     </h3>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                      <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-lg p-4">
                         <div className="flex items-center gap-2 mb-2">
-                          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                           </svg>
-                          <span className="text-sm font-medium text-blue-800 dark:text-blue-200">総イベント数</span>
+                          <span className="text-sm font-medium text-primary-800 dark:text-primary-200">総イベント数</span>
                         </div>
-                        <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                        <p className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                           {securityReport.totalEvents}
                         </p>
                       </div>
                       
-                      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                      <div className="bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-lg p-4">
                         <div className="flex items-center gap-2 mb-2">
-                          <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-success-600 dark:text-success-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                           </svg>
-                          <span className="text-sm font-medium text-green-800 dark:text-green-200">セキュリティ状態</span>
+                          <span className="text-sm font-medium text-success-800 dark:text-success-200">セキュリティ状態</span>
                         </div>
-                        <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                        <p className="text-2xl font-bold text-success-600 dark:text-success-400">
                           {securitySettings?.isSecure ? '安全' : '警告'}
                         </p>
                       </div>
@@ -189,7 +189,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
                     </h3>
                     <button
                       onClick={updateSecurityData}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm"
+                      className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md text-sm"
                     >
                       更新
                     </button>
@@ -240,12 +240,12 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
                   
                   <div className={`p-4 rounded-lg border ${
                     securitySettings.isSecure
-                      ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-                      : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+                      ? 'bg-success-50 dark:bg-success-900/20 border-success-200 dark:border-success-800'
+                      : 'bg-error-50 dark:bg-error-900/20 border-error-200 dark:border-error-800'
                   }`}>
                     <div className="flex items-center gap-2 mb-2">
                       <svg className={`w-5 h-5 ${
-                        securitySettings.isSecure ? 'text-green-600' : 'text-red-600'
+                        securitySettings.isSecure ? 'text-success-600' : 'text-error-600'
                       }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={
                           securitySettings.isSecure 
@@ -254,7 +254,7 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
                         } />
                       </svg>
                       <span className={`font-medium ${
-                        securitySettings.isSecure ? 'text-green-800' : 'text-red-800'
+                        securitySettings.isSecure ? 'text-success-800' : 'text-error-800'
                       }`}>
                         {securitySettings.isSecure ? 'セキュリティ設定は適切です' : 'セキュリティ設定に問題があります'}
                       </span>
@@ -263,13 +263,13 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
                   
                   {securitySettings.issues.length > 0 && (
                     <div>
-                      <h4 className="text-md font-semibold text-red-600 dark:text-red-400 mb-3">
+                      <h4 className="text-md font-semibold text-error-600 dark:text-error-400 mb-3">
                         検出された問題
                       </h4>
                       <ul className="space-y-2">
                         {securitySettings.issues.map((issue: string, index: number) => (
                           <li key={index} className="flex items-start gap-2">
-                            <svg className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 text-error-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                             <span className="text-sm text-gray-700 dark:text-gray-300">{issue}</span>
@@ -281,13 +281,13 @@ export const SecurityDashboard: React.FC<SecurityDashboardProps> = ({ isOpen, on
                   
                   {securitySettings.recommendations.length > 0 && (
                     <div>
-                      <h4 className="text-md font-semibold text-blue-600 dark:text-blue-400 mb-3">
+                      <h4 className="text-md font-semibold text-primary-600 dark:text-primary-400 mb-3">
                         推奨事項
                       </h4>
                       <ul className="space-y-2">
                         {securitySettings.recommendations.map((rec: string, index: number) => (
                           <li key={index} className="flex items-start gap-2">
-                            <svg className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 text-primary-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span className="text-sm text-gray-700 dark:text-gray-300">{rec}</span>

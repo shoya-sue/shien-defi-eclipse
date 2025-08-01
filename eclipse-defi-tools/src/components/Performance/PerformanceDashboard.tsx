@@ -69,9 +69,9 @@ export const PerformanceDashboard: React.FC = () => {
   };
 
   const getPerformanceColor = (value: number, thresholds: { good: number; warning: number }) => {
-    if (value <= thresholds.good) return 'text-green-600 dark:text-green-400';
-    if (value <= thresholds.warning) return 'text-yellow-600 dark:text-yellow-400';
-    return 'text-red-600 dark:text-red-400';
+    if (value <= thresholds.good) return 'text-success-600 dark:text-success-400';
+    if (value <= thresholds.warning) return 'text-warning-600 dark:text-warning-400';
+    return 'text-error-600 dark:text-error-400';
   };
 
   return (
@@ -87,7 +87,7 @@ export const PerformanceDashboard: React.FC = () => {
         </div>
         <button
           onClick={handleResetStats}
-          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          className="px-4 py-2 bg-error-600 text-white rounded-md hover:bg-error-700"
         >
           統計リセット
         </button>
@@ -95,22 +95,22 @@ export const PerformanceDashboard: React.FC = () => {
 
       {/* パフォーマンス統計 */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-          <p className="text-sm text-blue-600 dark:text-blue-300">平均応答時間</p>
+        <div className="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4">
+          <p className="text-sm text-primary-600 dark:text-primary-300">平均応答時間</p>
           <p className={`text-2xl font-bold ${getPerformanceColor(performanceStats.averageResponseTime, { good: 100, warning: 500 })}`}>
             {performanceStats.averageResponseTime.toFixed(1)}ms
           </p>
         </div>
         
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-          <p className="text-sm text-green-600 dark:text-green-300">総リクエスト数</p>
-          <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+        <div className="bg-success-50 dark:bg-success-900/20 rounded-lg p-4">
+          <p className="text-sm text-success-600 dark:text-success-300">総リクエスト数</p>
+          <p className="text-2xl font-bold text-success-600 dark:text-success-400">
             {performanceStats.totalRequests.toLocaleString()}
           </p>
         </div>
         
-        <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
-          <p className="text-sm text-red-600 dark:text-red-300">エラー率</p>
+        <div className="bg-error-50 dark:bg-error-900/20 rounded-lg p-4">
+          <p className="text-sm text-error-600 dark:text-error-300">エラー率</p>
           <p className={`text-2xl font-bold ${getPerformanceColor(performanceStats.errorRate, { good: 1, warning: 5 })}`}>
             {performanceStats.errorRate.toFixed(1)}%
           </p>
@@ -123,8 +123,8 @@ export const PerformanceDashboard: React.FC = () => {
           </p>
         </div>
         
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4">
-          <p className="text-sm text-yellow-600 dark:text-yellow-300">キャッシュ率</p>
+        <div className="bg-warning-50 dark:bg-warning-900/20 rounded-lg p-4">
+          <p className="text-sm text-warning-600 dark:text-warning-300">キャッシュ率</p>
           <p className={`text-2xl font-bold ${getPerformanceColor(100 - performanceStats.cacheHitRate, { good: 20, warning: 50 })}`}>
             {performanceStats.cacheHitRate.toFixed(1)}%
           </p>
@@ -172,7 +172,7 @@ export const PerformanceDashboard: React.FC = () => {
                 <h4 className="font-medium text-gray-900 dark:text-white">{cache.name}</h4>
                 <button
                   onClick={() => handleClearCache(cache.instance)}
-                  className="text-xs px-2 py-1 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300 rounded hover:bg-red-200 dark:hover:bg-red-800"
+                  className="text-xs px-2 py-1 bg-error-100 dark:bg-error-900 text-error-600 dark:text-error-300 rounded hover:bg-error-200 dark:hover:bg-error-800"
                 >
                   クリア
                 </button>
@@ -221,7 +221,7 @@ export const PerformanceDashboard: React.FC = () => {
                   <div className="flex items-center gap-3">
                     <span className="font-medium text-gray-900 dark:text-white">{metric.name}</span>
                     {metric.metadata?.success === false && (
-                      <span className="text-red-600 dark:text-red-400 text-xs">ERROR</span>
+                      <span className="text-error-600 dark:text-error-400 text-xs">ERROR</span>
                     )}
                   </div>
                   <div className="flex items-center gap-3">
@@ -245,7 +245,7 @@ export const PerformanceDashboard: React.FC = () => {
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             遅いリクエスト (1秒以上)
           </h3>
-          <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
+          <div className="bg-error-50 dark:bg-error-900/20 rounded-lg p-4">
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {slowRequests.slice(0, 10).map((metric, index) => (
                 <div key={index} className="flex items-center justify-between text-sm">
@@ -258,7 +258,7 @@ export const PerformanceDashboard: React.FC = () => {
                     )}
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="font-medium text-red-600 dark:text-red-400">
+                    <span className="font-medium text-error-600 dark:text-error-400">
                       {metric.duration.toFixed(1)}ms
                     </span>
                     <span className="text-gray-500 dark:text-gray-400 text-xs">

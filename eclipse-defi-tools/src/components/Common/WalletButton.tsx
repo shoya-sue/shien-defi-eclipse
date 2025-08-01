@@ -21,7 +21,7 @@ export const WalletButton: React.FC<WalletButtonProps> = ({ className }) => {
       <div className={`flex items-center gap-2 ${className}`}>
         <div className="flex flex-col items-end">
           <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <div className="w-2 h-2 bg-success-500 rounded-full"></div>
             <span className="text-sm font-medium">
               {formatAddress(publicKey.toBase58())}
             </span>
@@ -32,7 +32,7 @@ export const WalletButton: React.FC<WalletButtonProps> = ({ className }) => {
         </div>
         <button
           onClick={handleDisconnect}
-          className="px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+          className="px-3 py-2 text-sm font-medium text-error-600 hover:text-error-700 transition-colors"
         >
           Disconnect
         </button>
@@ -42,7 +42,7 @@ export const WalletButton: React.FC<WalletButtonProps> = ({ className }) => {
 
   return (
     <WalletMultiButton
-      className={`!bg-blue-600 hover:!bg-blue-700 !text-white !font-medium !rounded-lg !px-4 !py-2 !text-sm !transition-colors ${className}`}
+      className={`!bg-primary-600 hover:!bg-primary-700 !text-white !font-medium !rounded-lg !px-4 !py-2 !text-sm !transition-colors ${className}`}
     />
   );
 };

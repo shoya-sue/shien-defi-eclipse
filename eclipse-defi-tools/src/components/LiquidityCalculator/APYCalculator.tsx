@@ -95,7 +95,7 @@ export const APYCalculator: React.FC = () => {
                   onClick={() => setTimeInDays(days)}
                   className={`px-3 py-1 text-sm rounded ${
                     timeInDays === days
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-primary-600 text-white'
                       : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }`}
                 >
@@ -117,7 +117,7 @@ export const APYCalculator: React.FC = () => {
         <div className="space-y-4">
           {loading && (
             <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
               <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
                 プールデータを取得中...
               </p>
@@ -126,7 +126,7 @@ export const APYCalculator: React.FC = () => {
 
           {error && (
             <div className="text-center py-8">
-              <p className="text-red-600 dark:text-red-400">{error}</p>
+              <p className="text-error-600 dark:text-error-400">{error}</p>
             </div>
           )}
 
@@ -145,7 +145,7 @@ export const APYCalculator: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-300">APY:</span>
-                  <span className="font-medium text-green-600 dark:text-green-400">
+                  <span className="font-medium text-success-600 dark:text-success-400">
                     {formatPercentage(bestPool.apy)}
                   </span>
                 </div>
@@ -172,8 +172,8 @@ export const APYCalculator: React.FC = () => {
           )}
 
           {rewards && liquidityAmount && validateAmount(liquidityAmount) && (
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-3">
+            <div className="bg-success-50 dark:bg-success-900/20 border border-success-200 dark:border-success-800 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-success-800 dark:text-success-200 mb-3">
                 収益予測 ({timeInDays}日間)
               </h3>
               <div className="space-y-2 text-sm">
@@ -185,26 +185,26 @@ export const APYCalculator: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-300">手数料報酬:</span>
-                  <span className="font-medium text-green-600 dark:text-green-400">
+                  <span className="font-medium text-success-600 dark:text-success-400">
                     ${formatNumber(rewards.feeRewards, 2)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-300">トークン報酬:</span>
-                  <span className="font-medium text-green-600 dark:text-green-400">
+                  <span className="font-medium text-success-600 dark:text-success-400">
                     ${formatNumber(rewards.tokenRewards, 2)}
                   </span>
                 </div>
-                <div className="border-t border-green-200 dark:border-green-800 pt-2">
+                <div className="border-t border-success-200 dark:border-success-800 pt-2">
                   <div className="flex justify-between">
-                    <span className="font-medium text-green-800 dark:text-green-200">総収益:</span>
-                    <span className="font-bold text-green-600 dark:text-green-400">
+                    <span className="font-medium text-success-800 dark:text-success-200">総収益:</span>
+                    <span className="font-bold text-success-600 dark:text-success-400">
                       ${formatNumber(rewards.totalRewards, 2)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-medium text-green-800 dark:text-green-200">ROI:</span>
-                    <span className="font-bold text-green-600 dark:text-green-400">
+                    <span className="font-medium text-success-800 dark:text-success-200">ROI:</span>
+                    <span className="font-bold text-success-600 dark:text-success-400">
                       {formatPercentage((rewards.totalRewards / parseFloat(liquidityAmount)) * 100)}
                     </span>
                   </div>
@@ -238,7 +238,7 @@ export const APYCalculator: React.FC = () => {
                     key={index}
                     className={`${
                       pool === bestPool
-                        ? 'bg-green-50 dark:bg-green-900/20'
+                        ? 'bg-success-50 dark:bg-success-900/20'
                         : 'bg-white dark:bg-gray-800'
                     }`}
                   >
@@ -249,13 +249,13 @@ export const APYCalculator: React.FC = () => {
                            pool.poolId.includes('orca') ? 'Orca' : 'Raydium'}
                         </span>
                         {pool === bestPool && (
-                          <span className="text-xs bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 px-2 py-1 rounded">
+                          <span className="text-xs bg-success-100 dark:bg-success-800 text-success-800 dark:text-success-200 px-2 py-1 rounded">
                             最適
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-2 font-medium text-green-600 dark:text-green-400">
+                    <td className="px-4 py-2 font-medium text-success-600 dark:text-success-400">
                       {formatPercentage(pool.apy)}
                     </td>
                     <td className="px-4 py-2 text-gray-900 dark:text-white">

@@ -128,10 +128,10 @@ export const AutoTradingDashboard: React.FC = () => {
   const getStatusBadge = (status: BotStatus) => {
     const styles = {
       IDLE: 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200',
-      RUNNING: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200',
-      PAUSED: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200',
-      STOPPED: 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200',
-      ERROR: 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200',
+      RUNNING: 'bg-success-100 dark:bg-success-900 text-success-800 dark:text-success-200',
+      PAUSED: 'bg-warning-100 dark:bg-warning-900 text-warning-800 dark:text-warning-200',
+      STOPPED: 'bg-error-100 dark:bg-error-900 text-error-800 dark:text-error-200',
+      ERROR: 'bg-error-100 dark:bg-error-900 text-error-800 dark:text-error-200',
     };
 
     const labels = {
@@ -189,8 +189,8 @@ export const AutoTradingDashboard: React.FC = () => {
                       <span className="text-gray-600 dark:text-gray-400">損益:</span>
                       <span className={`font-medium ${
                         stats.totalProfit >= 0 
-                          ? 'text-green-600 dark:text-green-400' 
-                          : 'text-red-600 dark:text-red-400'
+                          ? 'text-success-600 dark:text-success-400' 
+                          : 'text-error-600 dark:text-error-400'
                       }`}>
                         ${formatNumber(stats.totalProfit)}
                       </span>
@@ -213,8 +213,8 @@ export const AutoTradingDashboard: React.FC = () => {
                   }}
                   className={`flex-1 px-3 py-2 rounded text-sm font-medium ${
                     status === 'RUNNING'
-                      ? 'bg-red-600 hover:bg-red-700 text-white'
-                      : 'bg-green-600 hover:bg-green-700 text-white'
+                      ? 'bg-error-600 hover:bg-error-700 text-white'
+                      : 'bg-success-600 hover:bg-success-700 text-white'
                   }`}
                 >
                   {status === 'RUNNING' ? '停止' : '開始'}
@@ -225,7 +225,7 @@ export const AutoTradingDashboard: React.FC = () => {
                       e.stopPropagation();
                       pauseBot(bot);
                     }}
-                    className="px-3 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded text-sm font-medium"
+                    className="px-3 py-2 bg-warning-600 hover:bg-warning-700 text-white rounded text-sm font-medium"
                   >
                     一時停止
                   </button>
@@ -281,13 +281,13 @@ export const AutoTradingDashboard: React.FC = () => {
           <div className="flex gap-4">
             <button
               onClick={() => setViewMode('logs')}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded"
             >
               実行ログを見る
             </button>
             <button
               onClick={() => setViewMode('stats')}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+              className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded"
             >
               統計を見る
             </button>
@@ -335,9 +335,9 @@ export const AutoTradingDashboard: React.FC = () => {
                 <td className="py-2 px-4">
                   <span className={`font-medium ${
                     log.action === 'BUY' 
-                      ? 'text-green-600 dark:text-green-400' 
+                      ? 'text-success-600 dark:text-success-400' 
                       : log.action === 'SELL'
-                      ? 'text-red-600 dark:text-red-400'
+                      ? 'text-error-600 dark:text-error-400'
                       : 'text-gray-600 dark:text-gray-400'
                   }`}>
                     {log.action === 'BUY' ? '買い' : log.action === 'SELL' ? '売り' : '保持'}
@@ -355,8 +355,8 @@ export const AutoTradingDashboard: React.FC = () => {
                 <td className="py-2 px-4 text-right">
                   {log.profit !== undefined && (
                     <span className={log.profit >= 0 
-                      ? 'text-green-600 dark:text-green-400' 
-                      : 'text-red-600 dark:text-red-400'
+                      ? 'text-success-600 dark:text-success-400' 
+                      : 'text-error-600 dark:text-error-400'
                     }>
                       ${formatNumber(log.profit)}
                     </span>
@@ -368,10 +368,10 @@ export const AutoTradingDashboard: React.FC = () => {
                 <td className="py-2 px-4 text-center">
                   <span className={`text-xs px-2 py-1 rounded ${
                     log.status === 'SUCCESS'
-                      ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                      ? 'bg-success-100 dark:bg-success-900 text-success-800 dark:text-success-200'
                       : log.status === 'PENDING'
-                      ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
-                      : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
+                      ? 'bg-warning-100 dark:bg-warning-900 text-warning-800 dark:text-warning-200'
+                      : 'bg-error-100 dark:bg-error-900 text-error-800 dark:text-error-200'
                   }`}>
                     {log.status === 'SUCCESS' ? '成功' : log.status === 'PENDING' ? '保留' : '失敗'}
                   </span>
@@ -411,13 +411,13 @@ export const AutoTradingDashboard: React.FC = () => {
           </div>
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">成功取引</p>
-            <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+            <p className="text-2xl font-bold text-success-600 dark:text-success-400">
               {botStats.successfulTrades}
             </p>
           </div>
           <div>
             <p className="text-sm text-gray-600 dark:text-gray-400">失敗取引</p>
-            <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+            <p className="text-2xl font-bold text-error-600 dark:text-error-400">
               {botStats.failedTrades}
             </p>
           </div>
@@ -431,8 +431,8 @@ export const AutoTradingDashboard: React.FC = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">総損益</p>
             <p className={`text-2xl font-bold ${
               botStats.totalProfit >= 0 
-                ? 'text-green-600 dark:text-green-400' 
-                : 'text-red-600 dark:text-red-400'
+                ? 'text-success-600 dark:text-success-400' 
+                : 'text-error-600 dark:text-error-400'
             }`}>
               ${formatNumber(botStats.totalProfit)}
             </p>
@@ -441,8 +441,8 @@ export const AutoTradingDashboard: React.FC = () => {
             <p className="text-sm text-gray-600 dark:text-gray-400">平均損益</p>
             <p className={`text-2xl font-bold ${
               botStats.averageProfit >= 0 
-                ? 'text-green-600 dark:text-green-400' 
-                : 'text-red-600 dark:text-red-400'
+                ? 'text-success-600 dark:text-success-400' 
+                : 'text-error-600 dark:text-error-400'
             }`}>
               ${formatNumber(botStats.averageProfit)}
             </p>
@@ -750,7 +750,7 @@ export const AutoTradingDashboard: React.FC = () => {
           </button>
           <button
             onClick={createBot}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+            className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded"
           >
             作成
           </button>
@@ -774,7 +774,7 @@ export const AutoTradingDashboard: React.FC = () => {
           
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
           >
             新規ボット作成
           </button>
