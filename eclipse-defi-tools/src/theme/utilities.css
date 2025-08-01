@@ -1,0 +1,292 @@
+@import 'tailwindcss';
+
+/* グローバルユーティリティクラス */
+
+/* レイアウトユーティリティ */
+.container-fluid {
+  @apply w-full px-4 mx-auto;
+}
+
+.container-sm {
+  @apply max-w-screen-sm mx-auto px-4;
+}
+
+.container-md {
+  @apply max-w-screen-md mx-auto px-4;
+}
+
+.container-lg {
+  @apply max-w-screen-lg mx-auto px-4;
+}
+
+.container-xl {
+  @apply max-w-screen-xl mx-auto px-4;
+}
+
+/* フレックスボックスユーティリティ */
+.flex-center {
+  @apply flex items-center justify-center;
+}
+
+.flex-between {
+  @apply flex items-center justify-between;
+}
+
+.flex-start {
+  @apply flex items-center justify-start;
+}
+
+.flex-end {
+  @apply flex items-center justify-end;
+}
+
+/* グリッドユーティリティ */
+.grid-auto-fit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.grid-auto-fill {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+/* テキストユーティリティ */
+.text-gradient {
+  background: linear-gradient(to right, #2563eb, #60a5fa);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* セクションユーティリティ */
+.section {
+  @apply py-8 md:py-12 lg:py-16;
+}
+
+.section-sm {
+  @apply py-4 md:py-6 lg:py-8;
+}
+
+.section-lg {
+  @apply py-12 md:py-16 lg:py-24;
+}
+
+/* カスタムスクロールバー */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(156 163 175) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 dark:bg-gray-600 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500 dark:bg-gray-500;
+}
+
+/* スケルトンローダー */
+.skeleton {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background-color: #e5e7eb;
+  border-radius: 0.25rem;
+}
+
+.dark .skeleton {
+  background-color: #374151;
+}
+
+.skeleton-text {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-title {
+  height: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-button {
+  height: 2.5rem;
+  width: 6rem;
+}
+
+.skeleton-card {
+  height: 8rem;
+}
+
+.skeleton-text,
+.skeleton-title,
+.skeleton-button,
+.skeleton-card {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  background-color: #e5e7eb;
+  border-radius: 0.25rem;
+}
+
+.dark .skeleton-text,
+.dark .skeleton-title,
+.dark .skeleton-button,
+.dark .skeleton-card {
+  background-color: #374151;
+}
+
+/* グラデーション背景 */
+.gradient-primary {
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+}
+
+.gradient-success {
+  background: linear-gradient(to right, #22c55e, #16a34a);
+}
+
+.gradient-error {
+  background: linear-gradient(to right, #ef4444, #dc2626);
+}
+
+.gradient-warning {
+  background: linear-gradient(to right, #f59e0b, #d97706);
+}
+
+/* オーバーレイ */
+.overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 z-40;
+}
+
+.overlay-light {
+  @apply fixed inset-0 bg-black bg-opacity-25 z-40;
+}
+
+.overlay-dark {
+  @apply fixed inset-0 bg-black bg-opacity-75 z-40;
+}
+
+/* グラスモーフィズム効果 */
+.glass {
+  @apply bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20;
+}
+
+.glass-dark {
+  @apply bg-gray-900 bg-opacity-10 backdrop-blur-lg border border-gray-700 border-opacity-20;
+}
+
+/* フォーカスリング */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+}
+
+.focus-ring-success {
+  @apply focus:outline-none focus:ring-2 focus:ring-success-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+}
+
+.focus-ring-error {
+  @apply focus:outline-none focus:ring-2 focus:ring-error-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+}
+
+/* トランジション */
+.transition-base {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.transition-slow {
+  @apply transition-all duration-500 ease-in-out;
+}
+
+.transition-fast {
+  @apply transition-all duration-150 ease-in-out;
+}
+
+/* ホバー効果 */
+.hover-scale {
+  @apply hover:scale-105 transition-transform duration-200;
+}
+
+.hover-scale-sm {
+  @apply hover:scale-102 transition-transform duration-200;
+}
+
+.hover-lift {
+  @apply hover:-translate-y-1 transition-transform duration-200;
+}
+
+/* クリック可能な要素 */
+.clickable {
+  @apply cursor-pointer select-none transition-opacity hover:opacity-80 active:opacity-60;
+}
+
+/* ステータスインジケーター */
+.status-dot {
+  @apply w-2 h-2 rounded-full;
+}
+
+.status-dot-success {
+  @apply status-dot bg-success-500;
+}
+
+.status-dot-warning {
+  @apply status-dot bg-warning-500;
+}
+
+.status-dot-error {
+  @apply status-dot bg-error-500;
+}
+
+.status-dot-info {
+  @apply status-dot bg-primary-500;
+}
+
+/* アニメーションステート */
+.loading {
+  @apply pointer-events-none opacity-60;
+}
+
+.disabled {
+  @apply pointer-events-none opacity-50 cursor-not-allowed;
+}
+
+/* レスポンシブ表示 */
+.mobile-only {
+  @apply block md:hidden;
+}
+
+.tablet-only {
+  @apply hidden md:block lg:hidden;
+}
+
+.desktop-only {
+  @apply hidden lg:block;
+}
+
+/* デバッグ用 */
+.debug-border {
+  @apply border-2 border-error-500;
+}
+
+.debug-bg {
+  @apply bg-error-100 dark:bg-error-900;
+}
